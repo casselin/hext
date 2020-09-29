@@ -1,7 +1,7 @@
 module Main where
 
 import Terminal
-import Input (processKey)
+import Input
 
 import Data.Bits ((.&.))
 import Data.Char (isControl, ord, chr)
