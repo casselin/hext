@@ -1,10 +1,10 @@
-name:                hilo
+name:                hext
 version:             0.1.0.0
-github:              "githubuser/hilo"
+github:              "githubuser/hext"
 license:             BSD3
 author:              "Craig Asselin"
 maintainer:          "asselin.craig@gmail.com"
-copyright:           "2020 Author name here"
+copyright:           "2020 Craig Asselin"
 
 extra-source-files:
 - README.md
@@ -12,12 +12,12 @@ extra-source-files:
 
 # Metadata used when publishing your package
 # synopsis:            line editor written in Haskell, based on kilo
-# category:            Web
+# category:            Terminal
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/hilo#readme>
+description:         Please see the README on GitHub at <https://github.com/githubuser/hext#readme>
 
 dependencies:
 - base >= 4.7 && < 5
@@ -27,23 +27,41 @@ library:
   source-dirs: src
 
 executables:
-  hilo:
+  hext:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
+    - -Wcompat
+    - -Widentities
+    - -Wincomplete-uni-patterns
+    - -Wincomplete-record-updates
+    - -Wredundant-constraints
+    - -Wpartial-fields
+    #- -Wmissing-export-lists
+    #- -Wmissing-deriving-strategies
     dependencies:
-    - hilo
+    - hext
 
 tests:
-  hilo-test:
+  hext-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
+    - -Wcompat
+    - -Widentities
+    - -Wincomplete-uni-patterns
+    - -Wincomplete-record-updates
+    - -Wredundant-constraints
+    - -Wpartial-fields
+    #- -Wmissing-export-lists
+    #- -Wmissing-deriving-strategies
     dependencies:
-    - hilo
+    - hext
