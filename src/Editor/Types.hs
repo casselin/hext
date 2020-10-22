@@ -5,32 +5,37 @@ type Rows = Int
 type Cols = Int
 
 data Editor = Editor
-    { ecx :: Cols
-    , ecy :: Rows
-    , eColOffset :: Cols
-    , eRowOffset :: Rows
+    { ecx         :: Cols
+    , ecy         :: Rows
+    , erx         :: Cols
+    , eColOffset  :: Cols
+    , eRowOffset  :: Rows
     , eScreenCols :: Cols
     , eScreenRows :: Rows
-    , eNumLines :: Rows
-    , eLines :: [EditorLine]
+    , eNumRows    :: Rows
+    , eRows       :: [EditorRow]
     }
 
 newEditor :: Editor
 newEditor = Editor
-    { ecx = 1
-    , ecy = 1
-    , eColOffset = 1
-    , eRowOffset = 1
+    { ecx         = 0
+    , ecy         = 0
+    , erx         = 0
+    , eColOffset  = 0
+    , eRowOffset  = 0
     , eScreenCols = 0
     , eScreenRows = 0
-    , eNumLines = 0
-    , eLines = []
+    , eNumRows    = 0
+    , eRows       = []
     }
 
-data EditorLine = EditorLine
-    { lineSize :: Int
-    , lineContents :: String
+data EditorRow = EditorRow
+    { rowSize       :: Int
+    , rowRenderSize :: Int
+    , rowContents   :: String
+    , rowRender     :: String
     }
+    deriving (Show, Eq)
 
 newtype EscSeq = EscSeq { unEscSeq :: String }
     deriving (Show, Eq)
@@ -52,3 +57,6 @@ data Direction
     | HomeKey
     | EndKey
     deriving (Show, Eq)
+
+tabStop :: Int
+tabStop = 8

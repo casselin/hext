@@ -1,6 +1,7 @@
 module Output where
 
 import Editor.Types
+import Editor.RowOps
 import Terminal.IO
 import Terminal.EscapeSequences
 
@@ -29,7 +30,7 @@ emptyRows n = (concat . take n) $ repeat emptyline
 welcomeRow :: Cols -> String
 welcomeRow c = "~" ++ (drop 1 padding) ++ welcome ++ padding
     where
-        welcome = take c "Hext Editor -- version 0.0.1.0"
+        welcome = take c "Hext -- version 0.1.0.0"
         padlen  = (c - length welcome) `div` 2
         padding = take padlen $ cycle " "
 
@@ -43,14 +44,14 @@ drawWelcome r c =
 
 drawFile :: Editor -> [String]
 drawFile e = map ( take c
-                 . drop (cOff - 1)
-                 . lineContents
+                 . drop cOff
+                 . rowRender
                  )
                  . take r
-                 . drop (rOff - 1)
+                 . drop rOff
                  $ xs
     where
-        xs   = eLines e
+        xs   = eRows e ++ repeat (newERow "~")
         r    = eScreenRows e
         rOff = eRowOffset e
         c    = eScreenCols e
@@ -67,9 +68,8 @@ drawRows e =
     then concat . mapDiffLast (++ newLine) (++ clearLine) $
              drawWelcome r c
     else concat . mapDiffLast (++ newLine) (++ clearLine) $
-             (drawFile e) ++ (take blanks $ repeat "~")
+             (drawFile e)
     where
-        n = eNumLines e
+        n = eNumRows e
         r = eScreenRows e
         c = eScreenCols e
-        blanks = r - n - 1

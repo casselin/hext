@@ -40,34 +40,40 @@ scroll = horiScroll . vertScroll
 
 moveCursor :: Editor -> Direction -> Editor
 moveCursor e d = case d of
-    ArrowUp    -> e { ecy = if y > 1 then (y - 1) else y }
+    ArrowUp    -> e { ecy = if y > 0 then (y - 1) else y }
     ArrowDown  -> e { ecy = if y < n then (y + 1) else y }
-    ArrowLeft  -> if x > 1
+    ArrowLeft  -> if x > 0
                   then e { ecx = (x - 1) }
-                  else if y > 1
+                  else if y > 0
                        then e { ecy = (y - 1)
-                              , ecx = lineSize $ (eLines e) !! (y - 2)
+                              , ecx = rowSize $ (eRows e) !! (y - 1)
                               }
                        else e
-    ArrowRight -> e { ecx = if x < l then (x + 1) else x }
+    ArrowRight -> if x < l
+                  then e { ecx = (x + 1) }
+                  else if y < n
+                       then e { ecy = (y + 1)
+                              , ecx = 0
+                              }
+                       else e
     DelKey     -> e
     PageUp     -> foldl moveCursor e . take r $ repeat ArrowUp
     PageDown   -> foldl moveCursor e . take r $ repeat ArrowDown
-    HomeKey    -> e { ecx = 1 }
-    EndKey     -> e { ecx = c }
+    HomeKey    -> e { ecx = 0 }
+    EndKey     -> e { ecx = c - 1 }
     where x = ecx e
           y = ecy e
           r = eScreenRows e
           c = eScreenCols e
-          n = eNumLines e
-          l = if y <= n then lineSize $ (eLines e) !! (y - 1) else 0
+          n = eNumRows e
+          l = if y < n then rowSize $ (eRows e) !! y else 0
 
 snapCursor :: Editor -> Editor
 snapCursor e = e { ecx = if x > l then l else x }
     where x = ecx e
           y = ecy e
-          n = eNumLines e
-          l = if y <= n then lineSize $ (eLines e) !! (y - 1) else 0
+          n = eNumRows e
+          l = if y < n then rowSize $ (eRows e) !! y else 0
 
 updateCursor :: Direction -> Editor -> Editor
 updateCursor d = scroll . snapCursor . flip moveCursor d
