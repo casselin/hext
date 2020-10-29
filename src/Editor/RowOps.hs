@@ -15,8 +15,8 @@ newERow s = EditorRow n n s s
 nextTab :: Cols -> Cols
 nextTab n = tabStop - (n `mod` tabStop)
 
-ecxToerx :: String -> Cols -> Cols
-ecxToerx s x = go s x 0
+ecxToErx :: String -> Cols -> Cols
+ecxToErx s x = go s x 0
     where
         go :: String -> Cols -> Cols -> Cols
         go []        _ r = r

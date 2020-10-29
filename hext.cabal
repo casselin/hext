@@ -38,6 +38,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , time
     , unix
   default-language: Haskell2010
 
@@ -51,6 +52,7 @@ executable hext
   build-depends:
       base >=4.7 && <5
     , hext
+    , time
     , unix
   default-language: Haskell2010
 
@@ -65,5 +67,6 @@ test-suite hext-test
   build-depends:
       base >=4.7 && <5
     , hext
+    , time
     , unix
   default-language: Haskell2010

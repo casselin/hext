@@ -18,13 +18,13 @@ initWindow e = do
     window <- getWindowSize
     case window of
         Left s -> error s
-        Right (r,c) -> return e { eScreenRows = r
+        Right (r,c) -> return e { eScreenRows = r - 2
                                 , eScreenCols = c }
 
 initFile :: String -> Editor -> IO Editor
 initFile s e = do
     file <- readFile s
-    return $ editorOpen e file
+    return $ (editorOpen e file) { eFileName = s }
 
 mainloop :: Editor -> IO ()
 mainloop e = do

@@ -4,6 +4,7 @@ import Data.Bits ((.&.))
 import Data.Char (ord, chr)
 
 import Editor.Types
+import Editor.RowOps
 
 
 ctrlkey :: Char -> Char
@@ -25,18 +26,25 @@ vertScroll e = if y < rOff
         rOff = eRowOffset e
 
 horiScroll :: Editor -> Editor
-horiScroll e = if x < cOff
-               then e { eColOffset = x }
-               else if x >= cOff + c
-                    then e { eColOffset = x - c + 1 }
+horiScroll e = if rx < cOff
+               then e { eColOffset = rx }
+               else if rx >= cOff + c
+                    then e { eColOffset = rx - c + 1 }
                     else e
     where
-        x = ecx e
+        rx = erx e
         c = eScreenCols e
         cOff = eColOffset e
 
+updateErx :: Editor -> Editor
+updateErx e = e { erx = ecxToErx s x }
+    where x = ecx e
+          y = ecy e
+          n = eNumRows e
+          s = if y < n then rowContents $ (eRows e) !! y else []
+
 scroll :: Editor -> Editor
-scroll = horiScroll . vertScroll
+scroll = horiScroll . vertScroll . updateErx
 
 moveCursor :: Editor -> Direction -> Editor
 moveCursor e d = case d of
@@ -57,14 +65,16 @@ moveCursor e d = case d of
                               }
                        else e
     DelKey     -> e
-    PageUp     -> foldl moveCursor e . take r $ repeat ArrowUp
-    PageDown   -> foldl moveCursor e . take r $ repeat ArrowDown
+    PageUp     -> foldl moveCursor (e { ecy = rOff }) .
+                      take r $ repeat ArrowUp
+    PageDown   -> foldl moveCursor (e { ecy = min (rOff + r - 1) n }).
+                      take r $ repeat ArrowDown
     HomeKey    -> e { ecx = 0 }
-    EndKey     -> e { ecx = c - 1 }
+    EndKey     -> e { ecx = l }
     where x = ecx e
           y = ecy e
           r = eScreenRows e
-          c = eScreenCols e
+          rOff = eRowOffset e
           n = eNumRows e
           l = if y < n then rowSize $ (eRows e) !! y else 0
 

@@ -21,3 +21,10 @@ newLine = "\ESC[K\r\n"
 
 clearScreen :: String
 clearScreen = "\ESC[2J\ESC[H"
+
+
+negativeColour :: String
+negativeColour = "\ESC[7m"
+
+defaultColour :: String
+defaultColour = "\ESC[m"
