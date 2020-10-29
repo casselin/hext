@@ -1,41 +1,21 @@
 module Output where
 
-import Data.Time.Clock.System
-    ( SystemTime(systemSeconds)
-    , getSystemTime
-    )
+import Data.Time.Clock.System (SystemTime(systemSeconds))
 
 import Editor.Types
 import Editor.RowOps
 import Terminal.IO
 import Terminal.EscapeSequences
 
--- updateScreen :: Editor -> IO ()
--- updateScreen e = do
---     let rx = erx e
---     let y = ecy e
---     let rOff = eRowOffset e
---     let cOff = eColOffset e
---     let screen = hideCursor                         ++
---                  setCursorPosition 1 1              ++
---                  drawRows e                         ++
---                  drawStatusBar e
---     messageBar <- drawMessageBar e
---     writeString $ screen                ++
---                   messageBar            ++
---                   setCursorPosition
---                       ((y - rOff) + 1)
---                       ((rx - cOff) + 1) ++
---                   showCursor
 
-
-refreshScreen :: Editor -> IO ()
-refreshScreen e =
+refreshScreen :: Editor -> SystemTime -> IO ()
+refreshScreen e t =
     writeString $
         hideCursor                         ++
         setCursorPosition 1 1              ++
         drawRows e                         ++
         drawStatusBar e                    ++
+        drawMessageBar e t                 ++
         setCursorPosition
             ((y - rOff) + 1)
             ((rx - cOff) + 1)              ++
@@ -105,20 +85,15 @@ drawStatusBar e = setCursorPosition (r+1) 1 ++
         lpos = length pos
         padding = c - lstatus - lpos
 
-timelimit :: SystemTime -> IO Bool
-timelimit t = do
-    now <- getSystemTime
-    return $ systemSeconds now - systemSeconds t < 5
-
-drawMessageBar :: Editor -> IO String
-drawMessageBar e = do
-    let statusMsg = smContents . eStatusMsg $ e
-    let r = eScreenRows e
-    let c = eScreenCols e
-    start <- smTime . eStatusMsg $ e
-    inTime <- timelimit start
-    if inTime
-        then return $ setCursorPosition (r+2) 1 ++
-                      clearLine                 ++
-                      take c statusMsg
-        else return $ setCursorPosition (r+2) 1 ++ clearLine
+drawMessageBar :: Editor -> SystemTime -> String
+drawMessageBar e t = setCursorPosition (r+2) 1 ++
+                     clearLine                 ++
+                     msg
+    where
+        r = eScreenRows e
+        c = eScreenCols e
+        start = mbTime . eMessageBar $ e
+        inTime = systemSeconds t - systemSeconds start < 5
+        msg = if inTime
+              then take c . mbContents . eMessageBar $ e
+              else ""

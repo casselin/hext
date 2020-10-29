@@ -1,5 +1,6 @@
 module Main where
 
+import Data.Time.Clock.System (getSystemTime)
 import System.Environment (getArgs)
 
 import Editor.Types
@@ -10,8 +11,14 @@ import FileIO
 
 
 initEditor :: [String] -> IO Editor
-initEditor []    = initWindow newEditor
-initEditor (s:_) = initWindow newEditor >>= initFile s
+initEditor as = initWindow newEditor >>=
+                initMessageBar       >>=
+                initFile as
+
+initMessageBar :: Editor -> IO Editor
+initMessageBar e = do
+    t <- getSystemTime
+    return $ setMessageBar e "HELP: Ctrl-Q = quit" t
 
 initWindow :: Editor -> IO Editor
 initWindow e = do
@@ -21,14 +28,16 @@ initWindow e = do
         Right (r,c) -> return e { eScreenRows = r - 2
                                 , eScreenCols = c }
 
-initFile :: String -> Editor -> IO Editor
-initFile s e = do
+initFile :: [String] -> Editor -> IO Editor
+initFile [] e = return e
+initFile (s:_) e = do
     file <- readFile s
     return $ (editorOpen e file) { eFileName = s }
 
 mainloop :: Editor -> IO ()
 mainloop e = do
-    refreshScreen e
+    t <- getSystemTime
+    refreshScreen e t
     result <- (processKey e . parseKey) <$> readKey
     case result of
         Just e' -> mainloop e'

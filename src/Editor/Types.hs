@@ -1,9 +1,6 @@
 module Editor.Types where
 
-import Data.Time.Clock.System
-    ( SystemTime
-    , getSystemTime
-    )
+import Data.Time.Clock.System (SystemTime(MkSystemTime))
 
 type Rows = Int
 type Cols = Int
@@ -19,7 +16,7 @@ data Editor = Editor
     , eNumRows       :: Rows
     , eRows          :: [EditorRow]
     , eFileName      :: String
-    , eStatusMsg     :: !StatusMessage
+    , eMessageBar    :: MessageBar
     }
 
 newEditor :: Editor
@@ -34,7 +31,7 @@ newEditor = Editor
     , eNumRows       = 0
     , eRows          = []
     , eFileName      = ""
-    , eStatusMsg     = defaultStatusMessage
+    , eMessageBar    = newMessageBar
     }
 
 data EditorRow = EditorRow
@@ -45,18 +42,18 @@ data EditorRow = EditorRow
     }
     deriving (Show, Eq)
 
-data StatusMessage = StatusMessage
-    { smContents  :: !String
-    , smTime      :: !(IO SystemTime)
+data MessageBar = MessageBar
+    { mbContents :: String
+    , mbTime     :: SystemTime
     }
 
-defaultStatusMessage :: StatusMessage
-defaultStatusMessage = StatusMessage
-    { smContents = "HELP: Ctrl-Q = quit"
-    , smTime     = getSystemTime }
+newMessageBar :: MessageBar
+newMessageBar = MessageBar
+    { mbContents = ""
+    , mbTime     = MkSystemTime 0 0}
 
-setStatusMessage :: String -> StatusMessage
-setStatusMessage s = StatusMessage s getSystemTime
+setMessageBar :: Editor -> String -> SystemTime -> Editor
+setMessageBar e s t = e { eMessageBar = MessageBar s t }
 
 newtype EscSeq = EscSeq { unEscSeq :: String }
     deriving (Show, Eq)
