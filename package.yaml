@@ -66,3 +66,5 @@ tests:
     #- -Wmissing-deriving-strategies
     dependencies:
     - hext
+    - hspec
+    - hspec-discover

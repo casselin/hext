@@ -18,6 +18,7 @@ data Editor = Editor
     , eFileName      :: String
     , eMessageBar    :: MessageBar
     }
+    deriving (Show, Eq)
 
 newEditor :: Editor
 newEditor = Editor
@@ -46,6 +47,7 @@ data MessageBar = MessageBar
     { mbContents :: String
     , mbTime     :: SystemTime
     }
+    deriving (Show, Eq)
 
 newMessageBar :: MessageBar
 newMessageBar = MessageBar

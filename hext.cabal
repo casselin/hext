@@ -60,6 +60,7 @@ test-suite hext-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Editor.RowOpsSpec
       Paths_hext
   hs-source-dirs:
       test
@@ -67,6 +68,8 @@ test-suite hext-test
   build-depends:
       base >=4.7 && <5
     , hext
+    , hspec
+    , hspec-discover
     , time
     , unix
   default-language: Haskell2010

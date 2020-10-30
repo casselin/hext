@@ -9,8 +9,19 @@ appendRow e s = e { eNumRows = succ $ eNumRows e
                   }
 
 newERow :: String -> EditorRow
-newERow s = EditorRow n n s s
-    where n = length s
+newERow s = updateRender $ EditorRow
+    { rowSize = length s
+    , rowRenderSize = 0
+    , rowContents = s
+    , rowRender = ""
+    }
+
+insertCharAt :: String -> Int -> Char -> String
+insertCharAt s i c = xs ++ [c] ++ ys
+    where (xs, ys) = splitAt i s
+
+rowInsertChar :: EditorRow -> Int -> Char -> EditorRow
+rowInsertChar er i c = undefined
 
 nextTab :: Cols -> Cols
 nextTab n = tabStop - (n `mod` tabStop)
