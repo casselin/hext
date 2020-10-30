@@ -97,7 +97,6 @@ rawMode =
 
 withRawInput :: IO a -> IO a
 withRawInput app = do
-    --hSetBuffering stdout NoBuffering
     oldTermSettings <- getTerminalAttributes stdInput
     let rawSettings = rawMode oldTermSettings
     setTerminalAttributes stdInput rawSettings WhenFlushed
@@ -105,7 +104,6 @@ withRawInput app = do
 
 disableRaw :: TerminalAttributes -> IO ()
 disableRaw orig = do
-    --hSetBuffering stdout LineBuffering
     setTerminalAttributes stdInput orig Immediately
 
 exitDie :: String -> IO ()
