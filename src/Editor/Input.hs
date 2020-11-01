@@ -1,4 +1,4 @@
-module Input where
+module Editor.Input where
 
 import Data.Bits ((.&.))
 import Data.Char (ord, chr)

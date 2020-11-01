@@ -3,11 +3,11 @@ module Main where
 import Data.Time.Clock.System (getSystemTime)
 import System.Environment (getArgs)
 
-import Editor.Types
 import Terminal.IO
-import Input
-import Output
-import FileIO
+import Editor.Types
+import Editor.Input
+import Editor.Output
+import Editor.FileIO
 
 
 initEditor :: [String] -> IO Editor

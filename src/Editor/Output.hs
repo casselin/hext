@@ -1,4 +1,4 @@
-module Output where
+module Editor.Output where
 
 import Data.Time.Clock.System (SystemTime(systemSeconds))
 

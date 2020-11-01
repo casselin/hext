@@ -25,11 +25,11 @@ source-repository head
 
 library
   exposed-modules:
+      Editor.FileIO
+      Editor.Input
+      Editor.Output
       Editor.RowOps
       Editor.Types
-      FileIO
-      Input
-      Output
       Terminal.EscapeSequences
       Terminal.IO
   other-modules:

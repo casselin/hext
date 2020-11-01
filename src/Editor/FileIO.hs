@@ -1,4 +1,4 @@
-module FileIO where
+module Editor.FileIO where
 
 import Editor.Types
 import Editor.RowOps
