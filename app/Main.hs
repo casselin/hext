@@ -32,7 +32,7 @@ initFile :: [String] -> Editor -> IO Editor
 initFile [] e = return e
 initFile (s:_) e = do
     file <- readFile s
-    return $ (editorOpen e file) { eFileName = s }
+    return $ loadFile e s file
 
 mainloop :: Editor -> IO ()
 mainloop e = do
