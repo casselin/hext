@@ -1,15 +1,10 @@
 module Editor.Input where
 
-import Data.Bits ((.&.))
 import Data.Char (ord, chr)
 
 import Editor.Types
 import Editor.RowOps
 
-
-ctrlkey :: Char -> Char
-ctrlkey = let bitmask = 0x1f
-          in chr . (.&.) bitmask . ord
 
 unctrlkey :: Char -> Char
 unctrlkey = chr . (+ 96) . ord
@@ -37,11 +32,11 @@ horiScroll e = if rx < cOff
         cOff = eColOffset e
 
 updateErx :: Editor -> Editor
-updateErx e = e { erx = ecxToErx s x }
+updateErx e = e { erx = ecxToErx er x }
     where x = ecx e
           y = ecy e
           n = eNumRows e
-          s = if y < n then rowContents $ (eRows e) !! y else []
+          er = if y < n then (eRows e) !! y else newERow ""
 
 scroll :: Editor -> Editor
 scroll = horiScroll . vertScroll . updateErx

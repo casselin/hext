@@ -26,9 +26,10 @@ rowInsertChar er i c = undefined
 nextTab :: Cols -> Cols
 nextTab n = tabStop - (n `mod` tabStop)
 
-ecxToErx :: String -> Cols -> Cols
-ecxToErx s x = go s x 0
+ecxToErx :: EditorRow -> Cols -> Cols
+ecxToErx er x = go s x 0
     where
+        s = rowContents er
         go :: String -> Cols -> Cols -> Cols
         go []        _ r = r
         go  _        0 r = r

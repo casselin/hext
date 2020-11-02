@@ -60,6 +60,7 @@ test-suite hext-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Editor.InputSpec
       Editor.RowOpsSpec
       Paths_hext
   hs-source-dirs:
