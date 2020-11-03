@@ -8,18 +8,17 @@ import Terminal.IO
 import Terminal.EscapeSequences
 
 
-refreshScreen :: Editor -> SystemTime -> IO ()
+refreshScreen :: Editor -> SystemTime -> String
 refreshScreen e t =
-    writeString $
-        hideCursor                         ++
-        setCursorPosition 1 1              ++
-        drawRows e                         ++
-        drawStatusBar e                    ++
-        drawMessageBar e t                 ++
-        setCursorPosition
-            ((y - rOff) + 1)
-            ((rx - cOff) + 1)              ++
-        showCursor
+    hideCursor                         ++
+    setCursorPosition 1 1              ++
+    drawRows e                         ++
+    drawStatusBar e                    ++
+    drawMessageBar e t                 ++
+    setCursorPosition
+        ((y - rOff) + 1)
+        ((rx - cOff) + 1)              ++
+    showCursor
     where
         rx = erx e
         y = ecy e

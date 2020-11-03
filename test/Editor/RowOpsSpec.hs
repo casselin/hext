@@ -19,7 +19,6 @@ testRow = EditorRow
 spec :: Spec
 spec = do
     spec_appendRow
-    spec_newERow
     spec_insertCharAt
     spec_nextTab
     spec_ecxToErx
@@ -34,12 +33,6 @@ spec_appendRow = describe "appendRow" $ do
                        , eRows =
                            [EditorRow 11 11 "Hello world" "Hello world"]
                        })
-
-spec_newERow :: Spec
-spec_newERow = describe "newERow" $ do
-    it "returns a new EditorRow for the given string" $ do
-        newERow "Hello world" `shouldBe`
-            (EditorRow 11 11 "Hello world" "Hello world")
 
 spec_insertCharAt :: Spec
 spec_insertCharAt = describe "insertCharAt" $ do
@@ -69,11 +62,11 @@ spec_nextTab = describe "nextTab" $ do
 spec_ecxToErx :: Spec
 spec_ecxToErx = describe "ecxToErx" $ do
     it "converts column position in text to column position on screen (so that tabs are rendered as spaces)" $ do
-        ecxToErx "\t" 0 `shouldBe` 0
-        ecxToErx "\t" 1 `shouldBe` 8
-        ecxToErx "01\t" 3 `shouldBe` 8
-        ecxToErx "\t\t" 1 `shouldBe` 8
-        ecxToErx "\t\t" 2 `shouldBe` 16
+        ecxToErx (newERow "\t") 0 `shouldBe` 0
+        ecxToErx (newERow "\t") 1 `shouldBe` 8
+        ecxToErx (newERow "01\t") 3 `shouldBe` 8
+        ecxToErx (newERow "\t\t") 1 `shouldBe` 8
+        ecxToErx (newERow "\t\t") 2 `shouldBe` 16
 
 spec_removeTabs :: Spec
 spec_removeTabs = describe "removeTabs" $ do

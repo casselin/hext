@@ -8,14 +8,6 @@ appendRow e s = e { eNumRows = succ $ eNumRows e
                   , eRows = eRows e ++ [updateRender $ newERow s]
                   }
 
-newERow :: String -> EditorRow
-newERow s = updateRender $ EditorRow
-    { rowSize = length s
-    , rowRenderSize = 0
-    , rowContents = s
-    , rowRender = ""
-    }
-
 insertCharAt :: String -> Int -> Char -> String
 insertCharAt s i c = xs ++ [c] ++ ys
     where (xs, ys) = splitAt i s

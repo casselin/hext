@@ -43,6 +43,14 @@ data EditorRow = EditorRow
     }
     deriving (Show, Eq)
 
+newERow :: String -> EditorRow
+newERow s = EditorRow
+    { rowSize = length s
+    , rowRenderSize = 0
+    , rowContents = s
+    , rowRender = ""
+    }
+
 data MessageBar = MessageBar
     { mbContents :: String
     , mbTime     :: SystemTime

@@ -37,7 +37,7 @@ initFile (s:_) e = do
 mainloop :: Editor -> IO ()
 mainloop e = do
     t <- getSystemTime
-    refreshScreen e t
+    writeString $ refreshScreen e t
     result <- (processKey e . parseKey) <$> readKey
     case result of
         Just e' -> mainloop e'
