@@ -3,7 +3,7 @@ module Editor.Input where
 import Data.Char (ord, chr)
 
 import Editor.Types
-import Editor.RowOps
+import Editor.Row
 
 
 unctrlkey :: Char -> Char

@@ -23,7 +23,7 @@ readCursorPosition :: IO String
 readCursorPosition = go ""
     where go cs = do
               c <- readByte
-              if c == '\0'
+              if c == '\NUL'
                   then return cs
                   else go (cs ++ [c])
 
@@ -75,7 +75,6 @@ readKey = do
 
 writeString :: String -> IO ()
 writeString s = fdWrite stdOutput s >> return ()
-
 
 rawMode :: TerminalAttributes -> TerminalAttributes
 rawMode =

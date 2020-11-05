@@ -1,9 +1,10 @@
-module Editor.RowOpsSpec where
+module Editor.RowSpec where
 
 import Test.Hspec
 
-import Editor.RowOps
+import Editor.Row
 import Editor.Types
+
 
 testEditor :: Editor
 testEditor = newEditor
@@ -18,21 +19,21 @@ testRow = EditorRow
 
 spec :: Spec
 spec = do
-    spec_appendRow
     spec_rowInsertChar
     spec_nextTab
     spec_ecxToErx
     spec_removeTabs
     spec_updateRender
 
-spec_appendRow :: Spec
-spec_appendRow = describe "appendRow" $ do
-    it "appends the given string to the given editor's EditorRows" $ do
-        appendRow testEditor "Hello world" `shouldBe`
-            (newEditor { eNumRows = 1
-                       , eRows =
-                           [EditorRow 11 11 "Hello world" "Hello world"]
-                       })
+-- TO BE MOVED TO EDITOR.HS
+-- spec_appendRow :: Spec
+-- spec_appendRow = describe "appendRow" $ do
+--     it "appends the given string to the given editor's EditorRows" $ do
+--         appendRow testEditor "Hello world" `shouldBe`
+--             (newEditor { eNumRows = 1
+--                        , eRows =
+--                            [EditorRow 11 11 "Hello world" "Hello world"]
+--                        })
 
 spec_rowInsertChar :: Spec
 spec_rowInsertChar = describe "rowInsertChar" $ do

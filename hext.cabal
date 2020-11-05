@@ -28,7 +28,7 @@ library
       Editor.FileIO
       Editor.Input
       Editor.Output
-      Editor.RowOps
+      Editor.Row
       Editor.Types
       Terminal.EscapeSequences
       Terminal.IO
@@ -62,7 +62,7 @@ test-suite hext-test
   main-is: Spec.hs
   other-modules:
       Editor.InputSpec
-      Editor.RowOpsSpec
+      Editor.RowSpec
       Paths_hext
   hs-source-dirs:
       test

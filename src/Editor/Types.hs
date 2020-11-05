@@ -2,6 +2,9 @@ module Editor.Types where
 
 import Data.Time.Clock.System (SystemTime(MkSystemTime))
 
+import Editor.Row
+
+
 type Rows = Int
 type Cols = Int
 
@@ -35,21 +38,10 @@ newEditor = Editor
     , eMessageBar    = newMessageBar
     }
 
-data EditorRow = EditorRow
-    { rowSize       :: Int
-    , rowRenderSize :: Int
-    , rowContents   :: String
-    , rowRender     :: String
-    }
-    deriving (Show, Eq)
-
-newERow :: String -> EditorRow
-newERow s = EditorRow
-    { rowSize = length s
-    , rowRenderSize = 0
-    , rowContents = s
-    , rowRender = ""
-    }
+appendRow :: Editor -> String -> Editor
+appendRow e s = e { eNumRows = succ $ eNumRows e
+                  , eRows = eRows e ++ [updateRender $ newERow s]
+                  }
 
 data MessageBar = MessageBar
     { mbContents :: String
@@ -85,6 +77,3 @@ data Direction
     | HomeKey
     | EndKey
     deriving (Show, Eq)
-
-tabStop :: Int
-tabStop = 8

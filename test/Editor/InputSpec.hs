@@ -4,6 +4,7 @@ import Test.Hspec
 
 import Editor.Input
 import Editor.Types
+import Editor.Row
 
 testEditor :: Editor
 testEditor = Editor
