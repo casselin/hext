@@ -3,7 +3,6 @@ module Editor.Output where
 import Data.Time.Clock.System (SystemTime(systemSeconds))
 
 import Editor.Types
-import Editor.RowOps
 import Terminal.IO
 import Terminal.EscapeSequences
 

@@ -51,7 +51,7 @@ getWindowSize = do
 
 readByte :: IO Char
 readByte = let handler :: IOException -> IO (String, ByteCount)
-               handler _ = return ("\0", 1)
+               handler _ = return ("\NUL", 1)
                in do
                    (c:_, _) <- (fdRead stdInput 1) `catch` handler
                    return c

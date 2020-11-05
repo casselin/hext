@@ -19,7 +19,7 @@ testRow = EditorRow
 spec :: Spec
 spec = do
     spec_appendRow
-    spec_insertCharAt
+    spec_rowInsertChar
     spec_nextTab
     spec_ecxToErx
     spec_removeTabs
@@ -34,21 +34,25 @@ spec_appendRow = describe "appendRow" $ do
                            [EditorRow 11 11 "Hello world" "Hello world"]
                        })
 
-spec_insertCharAt :: Spec
-spec_insertCharAt = describe "insertCharAt" $ do
-    it "inserts character at given position" $ do
-        insertCharAt "hllo" 1 'e' `shouldBe` "hello"
-        insertCharAt "ello" 0 'h' `shouldBe` "hello"
-        insertCharAt "hell" 4 'o' `shouldBe` "hello"
-        insertCharAt "hell" 3 'o' `shouldBe` "helol"
+spec_rowInsertChar :: Spec
+spec_rowInsertChar = describe "rowInsertChar" $ do
+    it "inserts character at given position of given EditorRow" $ do
+        rowInsertChar (newERow "hllo") 1 'e'
+            `shouldBe` EditorRow 5 5 "hello" "hello"
+        rowInsertChar (newERow "ello") 0 'h'
+            `shouldBe` EditorRow 5 5 "hello" "hello"
+        rowInsertChar (newERow "hell") 4 'o'
+            `shouldBe` EditorRow 5 5 "hello" "hello"
+        rowInsertChar (newERow "hell") 3 'o'
+            `shouldBe` EditorRow 5 5 "helol" "helol"
 
     it "prepends if index is too small" $ do
-        insertCharAt "ello" (-1) 'h' `shouldBe` "hello"
+        rowInsertChar (newERow "ello") (-1) 'h'
+            `shouldBe` EditorRow 5 5 "hello" "hello"
 
     it "appends if index is too large" $ do
-        insertCharAt "hell" 10 'o' `shouldBe` "hello"
-
-
+        rowInsertChar (newERow "hell") 10 'o'
+            `shouldBe` EditorRow 5 5 "hello" "hello"
 
 spec_nextTab :: Spec
 spec_nextTab = describe "nextTab" $ do

@@ -7,13 +7,10 @@ appendRow :: Editor -> String -> Editor
 appendRow e s = e { eNumRows = succ $ eNumRows e
                   , eRows = eRows e ++ [updateRender $ newERow s]
                   }
-
-insertCharAt :: String -> Int -> Char -> String
-insertCharAt s i c = xs ++ [c] ++ ys
-    where (xs, ys) = splitAt i s
-
+                  
 rowInsertChar :: EditorRow -> Int -> Char -> EditorRow
-rowInsertChar er i c = undefined
+rowInsertChar er i c = updateRender . newERow $ xs ++ [c] ++ ys
+    where (xs, ys) = splitAt i . rowContents $ er
 
 nextTab :: Cols -> Cols
 nextTab n = tabStop - (n `mod` tabStop)
