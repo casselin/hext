@@ -1,4 +1,4 @@
-module Editor.Types where
+module Editor.Editor where
 
 import Editor.Row
 import Editor.MessageBar

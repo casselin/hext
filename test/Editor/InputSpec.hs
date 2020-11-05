@@ -3,7 +3,7 @@ module Editor.InputSpec where
 import Test.Hspec
 
 import Editor.Input
-import Editor.Types
+import Editor.Editor
 import Editor.Row
 import Editor.MessageBar
 

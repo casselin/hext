@@ -4,7 +4,7 @@ import Data.Time.Clock.System (getSystemTime)
 import System.Environment (getArgs)
 
 import Terminal.IO
-import Editor.Types
+import Editor.Editor
 import Editor.MessageBar
 import Editor.Input
 import Editor.Output

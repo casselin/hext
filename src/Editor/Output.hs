@@ -4,7 +4,7 @@ import Data.Time.Clock.System (SystemTime)
 
 import Terminal.IO
 import Terminal.EscapeSequences
-import Editor.Types
+import Editor.Editor
 import Editor.Row
 import Editor.MessageBar
 

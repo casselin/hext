@@ -1,6 +1,6 @@
 module Editor.FileIO where
 
-import Editor.Types
+import Editor.Editor
 
 
 loadFile :: Editor -> FilePath -> String -> Editor

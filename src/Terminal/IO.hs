@@ -15,7 +15,7 @@ import Data.Char (isDigit)
 
 import Control.Exception (finally, catch, IOException)
 
-import Editor.Types
+import Editor.Editor
 import Terminal.EscapeSequences
 
 

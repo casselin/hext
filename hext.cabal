@@ -25,12 +25,12 @@ source-repository head
 
 library
   exposed-modules:
+      Editor.Editor
       Editor.FileIO
       Editor.Input
       Editor.MessageBar
       Editor.Output
       Editor.Row
-      Editor.Types
       Terminal.EscapeSequences
       Terminal.IO
   other-modules:

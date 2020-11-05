@@ -3,7 +3,7 @@ module Editor.RowSpec where
 import Test.Hspec
 
 import Editor.Row
-import Editor.Types
+import Editor.Editor
 
 
 testEditor :: Editor
