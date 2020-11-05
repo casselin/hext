@@ -27,6 +27,7 @@ library
   exposed-modules:
       Editor.FileIO
       Editor.Input
+      Editor.MessageBar
       Editor.Output
       Editor.Row
       Editor.Types

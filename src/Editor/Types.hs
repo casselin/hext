@@ -1,8 +1,7 @@
 module Editor.Types where
 
-import Data.Time.Clock.System (SystemTime(MkSystemTime))
-
 import Editor.Row
+import Editor.MessageBar
 
 
 type Rows = Int
@@ -35,7 +34,7 @@ newEditor = Editor
     , eNumRows       = 0
     , eRows          = []
     , eFileName      = ""
-    , eMessageBar    = newMessageBar
+    , eMessageBar    = emptyMessageBar
     }
 
 appendRow :: Editor -> String -> Editor
@@ -43,19 +42,8 @@ appendRow e s = e { eNumRows = succ $ eNumRows e
                   , eRows = eRows e ++ [updateRender $ newERow s]
                   }
 
-data MessageBar = MessageBar
-    { mbContents :: String
-    , mbTime     :: SystemTime
-    }
-    deriving (Show, Eq)
-
-newMessageBar :: MessageBar
-newMessageBar = MessageBar
-    { mbContents = ""
-    , mbTime     = MkSystemTime 0 0}
-
-setMessageBar :: Editor -> String -> SystemTime -> Editor
-setMessageBar e s t = e { eMessageBar = MessageBar s t }
+setMessageBar :: Editor -> MessageBar -> Editor
+setMessageBar e mb = e { eMessageBar = mb }
 
 newtype EscSeq = EscSeq { unEscSeq :: String }
     deriving (Show, Eq)

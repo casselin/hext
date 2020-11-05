@@ -1,11 +1,12 @@
 module Editor.Output where
 
-import Data.Time.Clock.System (SystemTime(systemSeconds))
+import Data.Time.Clock.System (SystemTime)
 
-import Editor.Types
-import Editor.Row
 import Terminal.IO
 import Terminal.EscapeSequences
+import Editor.Types
+import Editor.Row
+import Editor.MessageBar
 
 
 refreshScreen :: Editor -> SystemTime -> String
@@ -91,8 +92,7 @@ drawMessageBar e t = setCursorPosition (r+2) 1 ++
     where
         r = eScreenRows e
         c = eScreenCols e
-        start = mbTime . eMessageBar $ e
-        inTime = systemSeconds t - systemSeconds start < 5
-        msg = if inTime
-              then take c . mbContents . eMessageBar $ e
+        mb = eMessageBar e
+        msg = if inTime mb t
+              then take c . mbContents $ mb
               else ""

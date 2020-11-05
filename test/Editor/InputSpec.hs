@@ -5,6 +5,7 @@ import Test.Hspec
 import Editor.Input
 import Editor.Types
 import Editor.Row
+import Editor.MessageBar
 
 testEditor :: Editor
 testEditor = Editor
@@ -18,8 +19,9 @@ testEditor = Editor
     , eNumRows = 0
     , eRows = []
     , eFileName = ""
-    , eMessageBar = newMessageBar
+    , eMessageBar = emptyMessageBar
     }
+
 
 spec :: Spec
 spec = do
