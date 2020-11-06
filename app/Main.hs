@@ -5,7 +5,6 @@ import System.Environment (getArgs)
 
 import Terminal.IO
 import Editor.Editor
-import Editor.MessageBar
 import Editor.Input
 import Editor.Output
 import Editor.FileIO
@@ -19,7 +18,7 @@ initEditor as = initWindow newEditor >>=
 initMessageBar :: Editor -> IO Editor
 initMessageBar e = do
     t <- getSystemTime
-    return . setMessageBar e $ newMessageBar "HELP: Ctrl-Q = quit" t
+    return $ setMessageBar e "HELP: Ctrl-Q = quit" t
 
 initWindow :: Editor -> IO Editor
 initWindow e = do

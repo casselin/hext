@@ -1,5 +1,7 @@
 module Editor.Editor where
 
+import Data.Time.Clock.System (SystemTime)
+
 import Editor.Row
 import Editor.MessageBar
 
@@ -42,8 +44,8 @@ appendRow e s = e { eNumRows = succ $ eNumRows e
                   , eRows = eRows e ++ [updateRender $ newERow s]
                   }
 
-setMessageBar :: Editor -> MessageBar -> Editor
-setMessageBar e mb = e { eMessageBar = mb }
+setMessageBar :: Editor -> String -> SystemTime -> Editor
+setMessageBar e s t = e { eMessageBar = newMessageBar s t }
 
 newtype EscSeq = EscSeq { unEscSeq :: String }
     deriving (Show, Eq)
