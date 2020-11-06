@@ -4,5 +4,5 @@ import Editor.Editor
 
 
 loadFile :: Editor -> FilePath -> String -> Editor
-loadFile e fp s = (foldl appendRow e') . lines $ s
+loadFile e fp s = (foldl appendLine e') . lines $ s
     where e' = e { eFileName = fp }

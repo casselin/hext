@@ -28,9 +28,9 @@ library
       Editor.Editor
       Editor.FileIO
       Editor.Input
+      Editor.Line
       Editor.MessageBar
       Editor.Output
-      Editor.Row
       Terminal.EscapeSequences
       Terminal.IO
   other-modules:
@@ -63,7 +63,7 @@ test-suite hext-test
   main-is: Spec.hs
   other-modules:
       Editor.InputSpec
-      Editor.RowSpec
+      Editor.LineSpec
       Paths_hext
   hs-source-dirs:
       test

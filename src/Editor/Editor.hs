@@ -2,7 +2,7 @@ module Editor.Editor where
 
 import Data.Time.Clock.System (SystemTime)
 
-import Editor.Row
+import Editor.Line
 import Editor.MessageBar
 
 
@@ -17,8 +17,8 @@ data Editor = Editor
     , eRowOffset     :: Rows
     , eScreenCols    :: Cols
     , eScreenRows    :: Rows
-    , eNumRows       :: Rows
-    , eRows          :: [EditorRow]
+    , eNumLines      :: Rows
+    , eLines         :: [EditorLine]
     , eFileName      :: String
     , eMessageBar    :: MessageBar
     }
@@ -33,15 +33,15 @@ newEditor = Editor
     , eRowOffset     = 0
     , eScreenCols    = 0
     , eScreenRows    = 0
-    , eNumRows       = 0
-    , eRows          = []
+    , eNumLines      = 0
+    , eLines         = []
     , eFileName      = ""
     , eMessageBar    = emptyMessageBar
     }
 
-appendRow :: Editor -> String -> Editor
-appendRow e s = e { eNumRows = succ $ eNumRows e
-                  , eRows = eRows e ++ [updateRender $ newERow s]
+appendLine :: Editor -> String -> Editor
+appendLine e s = e { eNumLines = succ $ eNumLines e
+                  , eLines = eLines e ++ [updateRender $ newELine s]
                   }
 
 setMessageBar :: Editor -> String -> SystemTime -> Editor

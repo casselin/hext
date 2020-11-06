@@ -3,7 +3,7 @@ module Editor.Input where
 import Data.Char (ord, chr)
 
 import Editor.Editor
-import Editor.Row
+import Editor.Line
 
 
 unctrlkey :: Char -> Char
@@ -35,8 +35,8 @@ updateErx :: Editor -> Editor
 updateErx e = e { erx = ecxToErx er x }
     where x = ecx e
           y = ecy e
-          n = eNumRows e
-          er = if y < n then (eRows e) !! y else newERow ""
+          n = eNumLines e
+          er = if y < n then (eLines e) !! y else newELine ""
 
 scroll :: Editor -> Editor
 scroll = horiScroll . vertScroll . updateErx
@@ -49,7 +49,7 @@ moveCursor e d = case d of
                   then e { ecx = (x - 1) }
                   else if y > 0
                        then e { ecy = (y - 1)
-                              , ecx = rowSize $ (eRows e) !! (y - 1)
+                              , ecx = lineSize $ (eLines e) !! (y - 1)
                               }
                        else e
     ArrowRight -> if x < l
@@ -70,15 +70,15 @@ moveCursor e d = case d of
           y = ecy e
           r = eScreenRows e
           rOff = eRowOffset e
-          n = eNumRows e
-          l = if y < n then rowSize $ (eRows e) !! y else 0
+          n = eNumLines e
+          l = if y < n then lineSize $ (eLines e) !! y else 0
 
 snapCursor :: Editor -> Editor
 snapCursor e = e { ecx = if x > l then l else x }
     where x = ecx e
           y = ecy e
-          n = eNumRows e
-          l = if y < n then rowSize $ (eRows e) !! y else 0
+          n = eNumLines e
+          l = if y < n then lineSize $ (eLines e) !! y else 0
 
 updateCursor :: Direction -> Editor -> Editor
 updateCursor d = scroll . snapCursor . flip moveCursor d

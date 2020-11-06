@@ -5,7 +5,7 @@ import Data.Time.Clock.System (SystemTime)
 import Terminal.IO
 import Terminal.EscapeSequences
 import Editor.Editor
-import Editor.Row
+import Editor.Line
 import Editor.MessageBar
 
 
@@ -13,7 +13,7 @@ refreshScreen :: Editor -> SystemTime -> String
 refreshScreen e t =
     hideCursor                         ++
     setCursorPosition 1 1              ++
-    drawRows e                         ++
+    drawLines e                         ++
     drawStatusBar e                    ++
     drawMessageBar e t                 ++
     setCursorPosition
@@ -26,8 +26,8 @@ refreshScreen e t =
         rOff = eRowOffset e
         cOff = eColOffset e
 
-welcomeRow :: Cols -> String
-welcomeRow c = "~" ++ (drop 1 padding) ++ welcome ++ padding
+welcomeLine :: Cols -> String
+welcomeLine c = "~" ++ (drop 1 padding) ++ welcome ++ padding
     where
         welcome = take c "Hext -- version 0.1.0.0"
         padlen  = (c - length welcome) `div` 2
@@ -36,7 +36,7 @@ welcomeRow c = "~" ++ (drop 1 padding) ++ welcome ++ padding
 drawWelcome :: Rows -> Cols -> [String]
 drawWelcome r c =
     (take (k-1) $ repeat "~") ++
-    [welcomeRow c]            ++
+    [welcomeLine c]            ++
     (take (r-k) $ repeat "~")
     where
         k = r `div` 3
@@ -44,25 +44,25 @@ drawWelcome r c =
 drawFile :: Editor -> [String]
 drawFile e = map ( take c
                  . drop cOff
-                 . rowRender
+                 . lineRender
                  )
                  . take r
                  . drop rOff
                  $ xs
     where
-        xs   = eRows e ++ repeat (newERow "~")
+        xs   = eLines e ++ repeat (newELine "~")
         r    = eScreenRows e
         rOff = eRowOffset e
         c    = eScreenCols e
         cOff = eColOffset e
 
-drawRows :: Editor -> String
-drawRows e =
+drawLines :: Editor -> String
+drawLines e =
     if n == 0
     then concat . map (++ newLine) $ drawWelcome r c
     else concat . map (++ newLine) $ (drawFile e)
     where
-        n = eNumRows e
+        n = eNumLines e
         r = eScreenRows e
         c = eScreenCols e
 
@@ -79,7 +79,7 @@ drawStatusBar e = setCursorPosition (r+1) 1 ++
         filename = case eFileName e of
             "" -> "untitled"
             s  -> s
-        status = filename ++ " - " ++ (show $ eNumRows e) ++ " lines"
+        status = filename ++ " - " ++ (show $ eNumLines e) ++ " lines"
         lstatus = length status
         pos = (show . (+ 1) . ecy) e ++ ":" ++ (show . (+ 1) . ecx) e
         lpos = length pos
