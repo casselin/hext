@@ -41,8 +41,8 @@ newEditor = Editor
 
 appendLine :: Editor -> String -> Editor
 appendLine e s = e { eNumLines = succ $ eNumLines e
-                  , eLines = eLines e ++ [updateRender $ newELine s]
-                  }
+                   , eLines = eLines e ++ [updateRender $ newELine s]
+                   }
 
 setMessageBar :: Editor -> String -> SystemTime -> Editor
 setMessageBar e s t = e { eMessageBar = newMessageBar s t }

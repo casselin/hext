@@ -2,7 +2,9 @@ module Editor.MessageBar where
 
 import GHC.Int (Int64)
 import Data.Time.Clock.System
-    (SystemTime(MkSystemTime, systemSeconds)
+    (SystemTime( MkSystemTime
+               , systemSeconds
+               )
     )
 
 
