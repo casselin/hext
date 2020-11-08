@@ -2,9 +2,28 @@ module Editor.Input where
 
 import Data.Char (ord, chr)
 
+import Terminal.IO
 import Editor.Editor
 import Editor.Line
 
+
+data KeyPress
+    = Letter Char
+    | Ctrl Char
+    | Escape Direction
+    deriving (Show, Eq)
+
+data Direction
+    = ArrowUp
+    | ArrowDown
+    | ArrowLeft
+    | ArrowRight
+    | DelKey
+    | PageUp
+    | PageDown
+    | HomeKey
+    | EndKey
+    deriving (Show, Eq)
 
 unctrlkey :: Char -> Char
 unctrlkey = chr . (+ 96) . ord

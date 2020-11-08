@@ -46,24 +46,3 @@ appendLine e s = e { eNumLines = succ $ eNumLines e
 
 setMessageBar :: Editor -> String -> SystemTime -> Editor
 setMessageBar e s t = e { eMessageBar = newMessageBar s t }
-
-newtype EscSeq = EscSeq { unEscSeq :: String }
-    deriving (Show, Eq)
-
-data KeyPress
-    = Letter Char
-    | Ctrl Char
-    | Escape Direction
-    deriving (Show, Eq)
-
-data Direction
-    = ArrowUp
-    | ArrowDown
-    | ArrowLeft
-    | ArrowRight
-    | DelKey
-    | PageUp
-    | PageDown
-    | HomeKey
-    | EndKey
-    deriving (Show, Eq)

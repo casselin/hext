@@ -19,6 +19,9 @@ import Editor.Editor
 import Terminal.EscapeSequences
 
 
+newtype EscSeq = EscSeq { unEscSeq :: String }
+    deriving (Show, Eq)
+
 readCursorPosition :: IO String
 readCursorPosition = go ""
     where go cs = do
