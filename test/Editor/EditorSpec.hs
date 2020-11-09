@@ -13,6 +13,15 @@ testEditor = newEditor
 spec :: Spec
 spec = do
     spec_appendLine
+    spec_eNumLines
+
+spec_eNumLines :: Spec
+spec_eNumLines = describe "eNumLines" $ do
+    it "returns the length of the eLines field" $ do
+        eNumLines testEditor `shouldBe` 0
+        let e = testEditor { eLines = Seq.fromList $
+                                replicate 4 (newELine "") }
+        eNumLines e `shouldBe` 4
 
 spec_appendLine :: Spec
 spec_appendLine = describe "appendLine" $ do
