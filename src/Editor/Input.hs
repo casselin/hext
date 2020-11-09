@@ -1,5 +1,8 @@
 module Editor.Input where
 
+import qualified Data.Sequence as Seq
+    ( index
+    )
 import Data.Char (ord, chr)
 
 import Terminal.IO
@@ -55,7 +58,7 @@ updateErx e = e { erx = ecxToErx er x }
     where x = ecx e
           y = ecy e
           n = eNumLines e
-          er = if y < n then (eLines e) !! y else newELine ""
+          er = if y < n then (eLines e) `Seq.index` y else newELine ""
 
 scroll :: Editor -> Editor
 scroll = horiScroll . vertScroll . updateErx
@@ -68,7 +71,8 @@ moveCursor e d = case d of
                   then e { ecx = (x - 1) }
                   else if y > 0
                        then e { ecy = (y - 1)
-                              , ecx = lineSize $ (eLines e) !! (y - 1)
+                              , ecx =
+                                  lineSize $ (eLines e) `Seq.index` (y - 1)
                               }
                        else e
     ArrowRight -> if x < l
@@ -90,14 +94,14 @@ moveCursor e d = case d of
           r = eScreenRows e
           rOff = eRowOffset e
           n = eNumLines e
-          l = if y < n then lineSize $ (eLines e) !! y else 0
+          l = if y < n then lineSize $ (eLines e) `Seq.index` y else 0
 
 snapCursor :: Editor -> Editor
 snapCursor e = e { ecx = if x > l then l else x }
     where x = ecx e
           y = ecy e
           n = eNumLines e
-          l = if y < n then lineSize $ (eLines e) !! y else 0
+          l = if y < n then lineSize $ (eLines e) `Seq.index` y else 0
 
 updateCursor :: Direction -> Editor -> Editor
 updateCursor d = scroll . snapCursor . flip moveCursor d

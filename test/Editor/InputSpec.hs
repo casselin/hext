@@ -1,11 +1,13 @@
 module Editor.InputSpec where
 
+import qualified Data.Sequence as Seq
 import Test.Hspec
 
 import Editor.Input
 import Editor.Editor
 import Editor.Line
 import Editor.MessageBar
+
 
 testEditor :: Editor
 testEditor = Editor
@@ -16,12 +18,10 @@ testEditor = Editor
     , eRowOffset = 0
     , eScreenCols = 5
     , eScreenRows = 5
-    , eNumLines = 0
-    , eLines = []
+    , eLines = Seq.empty
     , eFileName = ""
     , eMessageBar = emptyMessageBar
     }
-
 
 spec :: Spec
 spec = do
@@ -71,19 +71,16 @@ spec_updateErx :: Spec
 spec_updateErx = describe "updateErx" $ do
     it "Updates the editor's render x coordinate based on the editor's file x coordinate (treating tabs as spaces)" $ do
         let e = testEditor { ecx = 0
-                           , eLines = [newELine "\t\t"]
-                           , eNumLines = 1
+                           , eLines = Seq.singleton $ newELine "\t\t"
                            }
         updateErx e `shouldBe` e { erx = 0 }
         let e1 = testEditor { ecx = 1
-                           , eLines = [newELine "\t\t"]
-                           , eNumLines = 1
-                           }
+                            , eLines = Seq.singleton $ newELine "\t\t"
+                            }
         updateErx e1 `shouldBe` e1 { erx = 8 }
         let e2 = testEditor { ecx = 2
-                           , eLines = [newELine "\t\t"]
-                           , eNumLines = 1
-                           }
+                            , eLines = Seq.singleton $ newELine "\t\t"
+                            }
         updateErx e2 `shouldBe` e2 { erx = 16 }
 
 spec_moveCursor :: Spec
@@ -97,7 +94,7 @@ spec_moveCursor = describe "moveCursor" $ do
         moveCursor e ArrowUp `shouldBe` e
 
     it "Moves the cursor down" $ do
-        let e = testEditor { eNumLines = 1, eLines = [newELine ""] }
+        let e = testEditor { eLines = Seq.singleton $ newELine "" }
         moveCursor e ArrowDown `shouldBe` e { ecy = 1 }
 
     it "Prevents moving the cursor down when at the bottom line" $ do
@@ -106,87 +103,77 @@ spec_moveCursor = describe "moveCursor" $ do
 
     it "Moves the cursor left" $ do
         let e = testEditor { ecx = 1
-                           , eNumLines = 2
-                           , eLines = [newELine "Test line 1",
-                                       newELine "Test line 2"]
+                           , eLines = Seq.fromList [newELine "Test line 1",
+                                                    newELine "Test line 2"]
                            }
         moveCursor e ArrowLeft `shouldBe` e { ecx = 0 }
 
     it "Moves the cursor to the end of the previous line if moving left at the beginning of a line" $ do
         let e = testEditor { ecx = 0
                            , ecy = 1
-                           , eNumLines = 2
-                           , eLines = [newELine "Test line 1",
-                                       newELine "Test line 2"]
+                           , eLines = Seq.fromList [newELine "Test line 1",
+                                                    newELine "Test line 2"]
                            }
         moveCursor e ArrowLeft `shouldBe` e { ecy = 0, ecx = 11 }
 
     it "Prevents moving the cursor if at the beginning of the first line" $ do
         let e = testEditor { ecx = 0
                            , ecy = 0
-                           , eNumLines = 2
-                           , eLines = [newELine "Test line 1",
-                                       newELine "Test line 2"]
+                           , eLines = Seq.fromList [newELine "Test line 1",
+                                                    newELine "Test line 2"]
                            }
         moveCursor e ArrowLeft `shouldBe` e
 
     it "Moves the cursor right" $ do
         let e = testEditor { ecx = 0
                            , ecy = 0
-                           , eNumLines = 2
-                           , eLines = [newELine "Test line 1",
-                                       newELine "Test line 2"]
+                           , eLines = Seq.fromList [newELine "Test line 1",
+                                                    newELine "Test line 2"]
                            }
         moveCursor e ArrowRight `shouldBe` e { ecx = 1 }
 
     it "Moves the cursor to the beginning of the next line if moving right at the end of a line" $ do
         let e = testEditor { ecx = 11
                            , ecy = 0
-                           , eNumLines = 2
-                           , eLines = [newELine "Test line 1",
-                                       newELine "Test line 2"]
+                           , eLines = Seq.fromList [newELine "Test line 1",
+                                                    newELine "Test line 2"]
                            }
         moveCursor e ArrowRight `shouldBe` e { ecy = 1, ecx = 0 }
 
     it "Does nothing if moving right when one line below the end of the file" $ do
         let e = testEditor { ecx = 0
                            , ecy = 2
-                           , eNumLines = 2
-                           , eLines = [newELine "Test line 1",
-                                       newELine "Test line 2"]
+                           , eLines = Seq.fromList [newELine "Test line 1",
+                                                    newELine "Test line 2"]
                            }
         moveCursor e ArrowRight `shouldBe` e
 
     it "Moves cursor to beginning of the current line" $ do
         let e = testEditor { ecx = 5
                            , ecy = 0
-                           , eNumLines = 2
-                           , eLines = [newELine "Test line 1",
-                                       newELine "Test line 2"]
+                           , eLines = Seq.fromList [newELine "Test line 1",
+                                                    newELine "Test line 2"]
                            }
         moveCursor e HomeKey `shouldBe` e { ecx = 0 }
 
     it "moves cursor to the end of the current line" $ do
         let e = testEditor { ecx = 0
                            , ecy = 0
-                           , eNumLines = 2
-                           , eLines = [newELine "Test line 1",
-                                       newELine "Test line 2"]
+                           , eLines = Seq.fromList [newELine "Test line 1",
+                                                    newELine "Test line 2"]
                            }
         moveCursor e EndKey `shouldBe` e { ecx = 11 }
 
 spec_snapCursor :: Spec
 spec_snapCursor = describe "snapCursor" $ do
     it "Moves the x coordinate to the end of the line if the x coordinate is too far to the right" $ do
-        let e = testEditor { eNumLines = 1
-                           , eLines = [newELine "Test line 1"]
+        let e = testEditor { eLines = Seq.singleton $ newELine "Test line 1"
                            , ecx = 15
                            }
         snapCursor e `shouldBe` e { ecx = 11 }
 
     it "Does nothing if the x coordinate is within the text of the line" $ do
-        let e = testEditor { eNumLines = 1
-                           , eLines = [newELine "Test line 1"]
+        let e = testEditor { eLines = Seq.singleton $ newELine "Test line 1"
                            , ecx = 5
                            }
         snapCursor e `shouldBe` e

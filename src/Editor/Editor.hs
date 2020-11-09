@@ -1,5 +1,7 @@
 module Editor.Editor where
 
+import Data.Sequence (Seq, (|>))
+import qualified Data.Sequence as Seq
 import Data.Time.Clock.System (SystemTime)
 
 import Editor.Line
@@ -17,8 +19,7 @@ data Editor = Editor
     , eRowOffset     :: Rows
     , eScreenCols    :: Cols
     , eScreenRows    :: Rows
-    , eNumLines      :: Rows
-    , eLines         :: [EditorLine]
+    , eLines         :: Seq EditorLine
     , eFileName      :: String
     , eMessageBar    :: MessageBar
     }
@@ -33,15 +34,16 @@ newEditor = Editor
     , eRowOffset     = 0
     , eScreenCols    = 0
     , eScreenRows    = 0
-    , eNumLines      = 0
-    , eLines         = []
+    , eLines         = Seq.empty
     , eFileName      = ""
     , eMessageBar    = emptyMessageBar
     }
 
+eNumLines :: Editor -> Int
+eNumLines = length . eLines
+
 appendLine :: Editor -> String -> Editor
-appendLine e s = e { eNumLines = succ $ eNumLines e
-                   , eLines = eLines e ++ [updateRender $ newELine s]
+appendLine e s = e { eLines = eLines e |> (updateRender $ newELine s)
                    }
 
 setMessageBar :: Editor -> String -> SystemTime -> Editor

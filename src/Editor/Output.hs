@@ -1,5 +1,6 @@
 module Editor.Output where
 
+import Data.Foldable
 import Data.Time.Clock.System (SystemTime)
 
 import Terminal.IO
@@ -50,7 +51,7 @@ drawFile e = map ( take c
                  . drop rOff
                  $ xs
     where
-        xs   = eLines e ++ repeat (newELine "~")
+        xs   = (toList . eLines) e ++ repeat (newELine "~")
         r    = eScreenRows e
         rOff = eRowOffset e
         c    = eScreenCols e

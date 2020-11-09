@@ -21,16 +21,6 @@ spec = do
     spec_removeTabs
     spec_updateRender
 
--- TO BE MOVED TO EDITORSPEC.HS
--- spec_appendLine :: Spec
--- spec_appendLine = describe "appendLine" $ do
---     it "appends the given string to the given editor's EditorLines" $ do
---         appendLine testEditor "Hello world" `shouldBe`
---             (newEditor { eNumLines = 1
---                        , eLines =
---                            [EditorLine 11 11 "Hello world" "Hello world"]
---                        })
-
 spec_lineInsertChar :: Spec
 spec_lineInsertChar = describe "lineInsertChar" $ do
     it "inserts character at given position of given EditorLine" $ do
