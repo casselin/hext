@@ -1,7 +1,7 @@
 module Editor.Editor where
 
 import Data.Sequence (Seq, (|>))
-import qualified Data.Sequence as Seq
+import qualified Data.Sequence as Seq (empty)
 import Data.Time.Clock.System (SystemTime)
 
 import Editor.Line

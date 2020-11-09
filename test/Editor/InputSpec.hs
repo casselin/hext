@@ -31,6 +31,7 @@ spec = do
     spec_updateErx
     spec_moveCursor
     spec_snapCursor
+    spec_insertChar
 
 spec_unctrlkey :: Spec
 spec_unctrlkey = describe "unctrlkey" $ do
@@ -177,3 +178,19 @@ spec_snapCursor = describe "snapCursor" $ do
                            , ecx = 5
                            }
         snapCursor e `shouldBe` e
+
+spec_insertChar :: Spec
+spec_insertChar = describe "insertChar" $ do
+    it "inserts a character into the EditorLine at the current x and y position" $ do
+        let e = testEditor { eLines = Seq.singleton $ newELine "Hello orld"
+                           , ecx = 6
+                           }
+        insertChar e 'w' `shouldBe`
+            e { eLines = Seq.singleton $ newELine "Hello world"
+              }
+
+    it "appends a new EditorLine and inserts the character if at the end of the file" $ do
+        let e = testEditor
+        insertChar e 'a' `shouldBe`
+            e { eLines = (eLines e) Seq.|> (newELine "a")
+              }

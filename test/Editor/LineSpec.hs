@@ -15,30 +15,30 @@ testLine = EditorLine
 
 spec :: Spec
 spec = do
-    spec_lineInsertChar
+    spec_lineInsertCharAt
     spec_nextTab
     spec_ecxToErx
     spec_removeTabs
     spec_updateRender
 
-spec_lineInsertChar :: Spec
-spec_lineInsertChar = describe "lineInsertChar" $ do
+spec_lineInsertCharAt :: Spec
+spec_lineInsertCharAt = describe "lineInsertCharAt" $ do
     it "inserts character at given position of given EditorLine" $ do
-        lineInsertChar (newELine "hllo") 1 'e'
+        lineInsertCharAt (newELine "hllo") 1 'e'
             `shouldBe` EditorLine 5 5 "hello" "hello"
-        lineInsertChar (newELine "ello") 0 'h'
+        lineInsertCharAt (newELine "ello") 0 'h'
             `shouldBe` EditorLine 5 5 "hello" "hello"
-        lineInsertChar (newELine "hell") 4 'o'
+        lineInsertCharAt (newELine "hell") 4 'o'
             `shouldBe` EditorLine 5 5 "hello" "hello"
-        lineInsertChar (newELine "hell") 3 'o'
+        lineInsertCharAt (newELine "hell") 3 'o'
             `shouldBe` EditorLine 5 5 "helol" "helol"
 
     it "prepends if index is too small" $ do
-        lineInsertChar (newELine "ello") (-1) 'h'
+        lineInsertCharAt (newELine "ello") (-1) 'h'
             `shouldBe` EditorLine 5 5 "hello" "hello"
 
     it "appends if index is too large" $ do
-        lineInsertChar (newELine "hell") 10 'o'
+        lineInsertCharAt (newELine "hell") 10 'o'
             `shouldBe` EditorLine 5 5 "hello" "hello"
 
 spec_nextTab :: Spec

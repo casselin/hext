@@ -1,6 +1,6 @@
 module Editor.Output where
 
-import Data.Foldable
+import Data.Foldable (toList)
 import Data.Time.Clock.System (SystemTime)
 
 import Terminal.IO
@@ -43,10 +43,7 @@ drawWelcome r c =
         k = r `div` 3
 
 drawFile :: Editor -> [String]
-drawFile e = map ( take c
-                 . drop cOff
-                 . lineRender
-                 )
+drawFile e = map (take c . drop cOff . lineRender)
                  . take r
                  . drop rOff
                  $ xs

@@ -2,6 +2,7 @@ module Editor.Input where
 
 import qualified Data.Sequence as Seq
     ( index
+    , update
     )
 import Data.Char (ord, chr)
 
@@ -11,7 +12,8 @@ import Editor.Line
 
 
 data KeyPress
-    = Letter Char
+    = Null
+    | Letter Char
     | Ctrl Char
     | Escape Direction
     deriving (Show, Eq)
@@ -106,6 +108,16 @@ snapCursor e = e { ecx = if x > l then l else x }
 updateCursor :: Direction -> Editor -> Editor
 updateCursor d = scroll . snapCursor . flip moveCursor d
 
+insertChar :: Editor -> Char -> Editor
+insertChar e c =
+    e' { eLines = Seq.update y (lineInsertCharAt el x c) (eLines e') }
+    where
+        x = ecx e
+        y = ecy e
+        n = eNumLines e
+        e' = if y == n then appendLine e "" else e
+        el = (eLines e') `Seq.index` y
+
 parseKey :: Either EscSeq Char -> KeyPress
 parseKey (Left (EscSeq s)) =
     case (drop 2 s) of
@@ -126,10 +138,12 @@ parseKey (Left (EscSeq s)) =
         "OF" -> Escape EndKey
         _    -> Letter '\ESC'
 parseKey (Right c)
-    | ord c >= 1 || ord c <= 26 = Ctrl (unctrlkey c)
+    | ord c == 0 = Null
+    | ord c >= 1 && ord c <= 26 = Ctrl (unctrlkey c)
     | otherwise = Letter c
 
 processKey :: Editor -> KeyPress -> Maybe Editor
-processKey e (Letter _) = Just e
+processKey e (Null)     = Just e
+processKey e (Letter c) = Just (updateCursor ArrowRight . insertChar e $ c)
 processKey e (Ctrl c)   = if c == 'q' then Nothing else Just e
-processKey e (Escape d) = Just $ updateCursor d e
+processKey e (Escape d) = Just (updateCursor d e)

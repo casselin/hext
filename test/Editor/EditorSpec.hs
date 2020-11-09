@@ -1,10 +1,13 @@
 module Editor.EditorSpec where
 
-import qualified Data.Sequence as Seq
 import Test.Hspec
+
+import qualified Data.Sequence as Seq
+import Data.Time.Clock.System (SystemTime(MkSystemTime))
 
 import Editor.Editor
 import Editor.Line
+import Editor.MessageBar
 
 
 testEditor :: Editor
@@ -14,6 +17,7 @@ spec :: Spec
 spec = do
     spec_appendLine
     spec_eNumLines
+    spec_setMessageBar
 
 spec_eNumLines :: Spec
 spec_eNumLines = describe "eNumLines" $ do
@@ -34,3 +38,10 @@ spec_appendLine = describe "appendLine" $ do
     it "increases the length of the eLines field by one" $ do
         (length . eLines . appendLine testEditor) "Hello world" `shouldBe`
             ((+ 1) . length . eLines) testEditor
+
+spec_setMessageBar :: Spec
+spec_setMessageBar = describe "setMessageBar" $ do
+    it "returns an editor with a MessageBar with the given string and time" $ do
+        let t = MkSystemTime 10 10
+        setMessageBar testEditor "Hello" t `shouldBe`
+            testEditor { eMessageBar = newMessageBar "Hello" t }

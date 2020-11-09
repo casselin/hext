@@ -24,8 +24,8 @@ updateRender el = el { lineRenderSize = n
         s = removeTabs . lineContents $ el
         n = length s
 
-lineInsertChar :: EditorLine -> Int -> Char -> EditorLine
-lineInsertChar el i c = updateRender . newELine $ xs ++ [c] ++ ys
+lineInsertCharAt :: EditorLine -> Int -> Char -> EditorLine
+lineInsertCharAt el i c = updateRender . newELine $ xs ++ [c] ++ ys
     where (xs, ys) = splitAt i . lineContents $ el
 
 tabStop :: Int
