@@ -160,13 +160,3 @@ processKey e (Escape d)  = (Empty, updateCursor d e)
 processKey e (Ctrl c)    = case c of
     'q' -> (Exit, e)
     _   -> (Empty, e)
-
--- * In case I break things * --
--- processKey :: Editor -> KeyPress -> Maybe Editor
--- processKey e (Null)      = Just e
--- processKey e (Enter)     = Just e -- TODO
--- processKey e (Esc)       = Just e
--- processKey e (Backspace) = Just e -- TODO
--- processKey e (Letter c)  = Just (insertChar e $ c)
--- processKey e (Ctrl c)    = if c == 'q' then Nothing else Just e
--- processKey e (Escape d)  = Just (updateCursor d e)

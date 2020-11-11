@@ -43,15 +43,5 @@ mainloop e = do
         Empty -> mainloop e'
         Exit  -> exitProgram
 
--- * In case I break things * --
--- mainloop :: Editor -> IO ()
--- mainloop e = do
---     t <- getSystemTime
---     writeString $ refreshScreen e t
---     result <- (processKey e . parseKey) <$> readKey
---     case result of
---         Just e' -> mainloop e'
---         Nothing -> exitProgram
-
 main :: IO ()
 main = withRawInput $ getArgs >>= initEditor >>= mainloop
