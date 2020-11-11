@@ -10,9 +10,15 @@ import Terminal.IO
 import Editor.Editor
 import Editor.Line
 
+data IORequest
+    = Empty
+    | Exit
 
 data KeyPress
     = Null
+    | Enter
+    | Esc
+    | Backspace
     | Letter Char
     | Ctrl Char
     | Escape Direction
@@ -109,7 +115,7 @@ updateCursor :: Direction -> Editor -> Editor
 updateCursor d = scroll . snapCursor . flip moveCursor d
 
 insertChar :: Editor -> Char -> Editor
-insertChar e c =
+insertChar e c = updateCursor ArrowRight
     e' { eLines = Seq.update y (lineInsertCharAt el x c) (eLines e') }
     where
         x = ecx e
@@ -136,14 +142,31 @@ parseKey (Left (EscSeq s)) =
         "OH" -> Escape HomeKey
         "F"  -> Escape EndKey
         "OF" -> Escape EndKey
-        _    -> Letter '\ESC'
+        _    -> Esc
 parseKey (Right c)
-    | ord c == 0 = Null
-    | ord c >= 1 && ord c <= 26 = Ctrl (unctrlkey c)
-    | otherwise = Letter c
+    | c == '\NUL'             = Null
+    | c == '\r'               = Enter
+    | c == '\DEL'             = Backspace
+    | c >= '\1' && c <= '\26' = Ctrl (unctrlkey c)
+    | otherwise               = Letter c
 
-processKey :: Editor -> KeyPress -> Maybe Editor
-processKey e (Null)     = Just e
-processKey e (Letter c) = Just (updateCursor ArrowRight . insertChar e $ c)
-processKey e (Ctrl c)   = if c == 'q' then Nothing else Just e
-processKey e (Escape d) = Just (updateCursor d e)
+processKey :: Editor -> KeyPress -> (IORequest, Editor)
+processKey e (Null)      = (Empty, e)
+processKey e (Enter)     = (Empty, e) -- TODO
+processKey e (Esc)       = (Empty, e)
+processKey e (Backspace) = (Empty, e) -- TODO
+processKey e (Letter c)  = (Empty, insertChar e $ c)
+processKey e (Escape d)  = (Empty, updateCursor d e)
+processKey e (Ctrl c)    = case c of
+    'q' -> (Exit, e)
+    _   -> (Empty, e)
+
+-- * In case I break things * --
+-- processKey :: Editor -> KeyPress -> Maybe Editor
+-- processKey e (Null)      = Just e
+-- processKey e (Enter)     = Just e -- TODO
+-- processKey e (Esc)       = Just e
+-- processKey e (Backspace) = Just e -- TODO
+-- processKey e (Letter c)  = Just (insertChar e $ c)
+-- processKey e (Ctrl c)    = if c == 'q' then Nothing else Just e
+-- processKey e (Escape d)  = Just (updateCursor d e)

@@ -181,16 +181,16 @@ spec_snapCursor = describe "snapCursor" $ do
 
 spec_insertChar :: Spec
 spec_insertChar = describe "insertChar" $ do
-    it "inserts a character into the EditorLine at the current x and y position" $ do
+    it "inserts a character into the EditorLine at the current x and y position and moves x to the right" $ do
         let e = testEditor { eLines = Seq.singleton $ newELine "Hello orld"
                            , ecx = 6
                            }
         insertChar e 'w' `shouldBe`
-            e { eLines = Seq.singleton $ newELine "Hello world"
-              }
+            updateCursor ArrowRight
+                e { eLines = Seq.singleton $ newELine "Hello world" }
 
-    it "appends a new EditorLine and inserts the character if at the end of the file" $ do
+    it "appends a new EditorLine and inserts the character if at the end of the file and moves x to the right" $ do
         let e = testEditor
         insertChar e 'a' `shouldBe`
-            e { eLines = (eLines e) Seq.|> (newELine "a")
-              }
+            updateCursor ArrowRight
+                e { eLines = (eLines e) Seq.|> (newELine "a") }

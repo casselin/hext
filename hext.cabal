@@ -65,6 +65,7 @@ test-suite hext-test
   main-is: Spec.hs
   other-modules:
       Editor.EditorSpec
+      Editor.FileIOSpec
       Editor.InputSpec
       Editor.LineSpec
       Editor.MessageBarSpec

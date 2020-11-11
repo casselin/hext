@@ -43,8 +43,9 @@ eNumLines :: Editor -> Int
 eNumLines = length . eLines
 
 appendLine :: Editor -> String -> Editor
-appendLine e s = e { eLines = eLines e |> (updateRender $ newELine s)
-                   }
+appendLine e s =
+    e { eLines = eLines e |> (updateRender $ newELine s) }
 
 setMessageBar :: Editor -> String -> SystemTime -> Editor
-setMessageBar e s t = e { eMessageBar = newMessageBar s t }
+setMessageBar e s t =
+    e { eMessageBar = newMessageBar s t }
