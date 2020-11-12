@@ -23,8 +23,3 @@ loadFile e fp s = flip loadContents s
 
 linesToString :: Editor -> String
 linesToString = foldr ((\a b -> a ++ "\n" ++ b) . lineContents) "" . eLines
-
-saveFile :: Editor -> IO ()
-saveFile e = if eFileName e == ""
-             then return ()
-             else writeFile (eFileName e) (linesToString e)

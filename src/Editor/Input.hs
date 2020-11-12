@@ -11,7 +11,8 @@ import Editor.Editor
 import Editor.Line
 
 data IORequest
-    = Empty
+    = None
+    | Save
     | Exit
 
 data KeyPress
@@ -151,12 +152,13 @@ parseKey (Right c)
     | otherwise               = Letter c
 
 processKey :: Editor -> KeyPress -> (IORequest, Editor)
-processKey e (Null)      = (Empty, e)
-processKey e (Enter)     = (Empty, e) -- TODO
-processKey e (Esc)       = (Empty, e)
-processKey e (Backspace) = (Empty, e) -- TODO
-processKey e (Letter c)  = (Empty, insertChar e $ c)
-processKey e (Escape d)  = (Empty, updateCursor d e)
+processKey e (Null)      = (None, e)
+processKey e (Enter)     = (None, e) -- TODO
+processKey e (Esc)       = (None, e)
+processKey e (Backspace) = (None, e) -- TODO
+processKey e (Letter c)  = (None, insertChar e $ c)
+processKey e (Escape d)  = (None, updateCursor d e)
 processKey e (Ctrl c)    = case c of
     'q' -> (Exit, e)
-    _   -> (Empty, e)
+    's' -> (Save, e)
+    _   -> (None, e)

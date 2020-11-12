@@ -15,9 +15,7 @@ mainloop e = do
     t <- getSystemTime
     writeString $ refreshScreen e t
     (req, e') <- (processKey e . parseKey) <$> readKey
-    case req of
-        Empty -> mainloop e'
-        Exit  -> exitProgram
+    handleIORequest e' req >>= mainloop
 
 main :: IO ()
 main = withRawInput $ getArgs >>= initEditor >>= mainloop
