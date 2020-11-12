@@ -26,8 +26,9 @@ source-repository head
 library
   exposed-modules:
       Editor.Editor
-      Editor.FileIO
+      Editor.File
       Editor.Input
+      Editor.IO
       Editor.Line
       Editor.MessageBar
       Editor.Output
@@ -65,7 +66,7 @@ test-suite hext-test
   main-is: Spec.hs
   other-modules:
       Editor.EditorSpec
-      Editor.FileIOSpec
+      Editor.FileSpec
       Editor.InputSpec
       Editor.LineSpec
       Editor.MessageBarSpec

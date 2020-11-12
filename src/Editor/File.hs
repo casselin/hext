@@ -1,4 +1,4 @@
-module Editor.FileIO where
+module Editor.File where
 
 import qualified Data.Sequence as Seq (empty)
 import Editor.Editor

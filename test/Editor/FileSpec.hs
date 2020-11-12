@@ -1,9 +1,9 @@
-module Editor.FileIOSpec where
+module Editor.FileSpec where
 
 import qualified Data.Sequence as Seq (empty)
 import Test.Hspec
 
-import Editor.FileIO
+import Editor.File
 import Editor.Editor
 
 
