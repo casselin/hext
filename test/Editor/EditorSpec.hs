@@ -43,5 +43,6 @@ spec_setMessageBar :: Spec
 spec_setMessageBar = describe "setMessageBar" $ do
     it "returns an editor with a MessageBar with the given string and time" $ do
         let t = MkSystemTime 10 10
-        setMessageBar testEditor "Hello" t `shouldBe`
-            testEditor { eMessageBar = newMessageBar "Hello" t }
+            e = testEditor { eTime = t }
+        setMessageBar e "Hello" `shouldBe`
+            e { eMessageBar = newMessageBar "Hello" t }

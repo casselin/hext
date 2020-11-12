@@ -13,9 +13,10 @@ import Editor.IO
 mainloop :: Editor -> IO ()
 mainloop e = do
     t <- getSystemTime
-    writeString $ refreshScreen e t
-    (req, e') <- (processKey e . parseKey) <$> readKey
-    handleIORequest e' req >>= mainloop
+    let e' = e { eTime = t }
+    writeString . refreshScreen $ e'
+    result <- (processKey e' . parseKey) <$> readKey
+    handleIORequest result >>= mainloop
 
 main :: IO ()
 main = withRawInput $ getArgs >>= initEditor >>= mainloop

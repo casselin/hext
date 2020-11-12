@@ -1,6 +1,7 @@
 module Editor.InputSpec where
 
 import qualified Data.Sequence as Seq
+import Data.Time.Clock.System (SystemTime(MkSystemTime))
 import Test.Hspec
 
 import Editor.Input
@@ -21,6 +22,7 @@ testEditor = Editor
     , eLines = Seq.empty
     , eFileName = ""
     , eMessageBar = emptyMessageBar
+    , eTime = MkSystemTime 0 0
     }
 
 spec :: Spec

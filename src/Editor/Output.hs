@@ -1,7 +1,6 @@
 module Editor.Output where
 
 import Data.Foldable (toList)
-import Data.Time.Clock.System (SystemTime)
 
 import Terminal.IO
 import Terminal.EscapeSequences
@@ -10,16 +9,16 @@ import Editor.Line
 import Editor.MessageBar
 
 
-refreshScreen :: Editor -> SystemTime -> String
-refreshScreen e t =
-    hideCursor                         ++
-    setCursorPosition 1 1              ++
-    drawLines e                         ++
-    drawStatusBar e                    ++
-    drawMessageBar e t                 ++
+refreshScreen :: Editor -> String
+refreshScreen e =
+    hideCursor            ++
+    setCursorPosition 1 1 ++
+    drawLines e           ++
+    drawStatusBar e       ++
+    drawMessageBar e      ++
     setCursorPosition
         ((y - rOff) + 1)
-        ((rx - cOff) + 1)              ++
+        ((rx - cOff) + 1) ++
     showCursor
     where
         rx = erx e
@@ -83,14 +82,15 @@ drawStatusBar e = setCursorPosition (r+1) 1 ++
         lpos = length pos
         padding = c - lstatus - lpos
 
-drawMessageBar :: Editor -> SystemTime -> String
-drawMessageBar e t = setCursorPosition (r+2) 1 ++
-                     clearLine                 ++
-                     msg
+drawMessageBar :: Editor -> String
+drawMessageBar e = setCursorPosition (r+2) 1 ++
+                   clearLine                 ++
+                   msg
     where
         r = eScreenRows e
         c = eScreenCols e
         mb = eMessageBar e
+        t = eTime e
         msg = if inTime mb t
               then take c . mbContents $ mb
               else ""
