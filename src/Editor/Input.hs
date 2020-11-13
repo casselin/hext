@@ -117,7 +117,9 @@ updateCursor d = scroll . snapCursor . flip moveCursor d
 
 insertChar :: Editor -> Char -> Editor
 insertChar e c = updateCursor ArrowRight
-    e' { eLines = Seq.update y (lineInsertCharAt el x c) (eLines e') }
+    e' { eLines = Seq.update y (lineInsertCharAt el x c) (eLines e')
+       , eDirty = True
+       }
     where
         x = ecx e
         y = ecy e

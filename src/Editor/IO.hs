@@ -38,7 +38,7 @@ initWindow e = do
 initFile :: String -> Editor -> IO Editor
 initFile s e = do
     file <- readFile s
-    return $ loadFile e s file
+    return $ (loadFile e s file) { eDirty = False }
 
 saveFile :: Editor -> IO Editor
 saveFile e = case file of
@@ -48,7 +48,9 @@ saveFile e = case file of
         case result of
             (Left err) ->
                 return . setMessageBar e $ "Save failed: " ++ show err
-            (Right _) -> return . setMessageBar e $ "Saved " ++ file
+            (Right _) -> do
+                let e' = setMessageBar e $ "Saved " ++ file
+                return $ e' { eDirty = False }
     where
         file = eFileName e
         s = linesToString e

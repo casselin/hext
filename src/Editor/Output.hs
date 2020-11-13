@@ -76,7 +76,12 @@ drawStatusBar e = setCursorPosition (r+1) 1 ++
         filename = case eFileName e of
             "" -> "untitled"
             s  -> s
-        status = filename ++ " - " ++ (show $ eNumLines e) ++ " lines"
+        modified = if eDirty e then "(modified)" else ""
+        status = filename ++
+                 " - "    ++
+                 (show $ eNumLines e) ++
+                 " lines " ++
+                 modified
         lstatus = length status
         pos = (show . (+ 1) . ecy) e ++ ":" ++ (show . (+ 1) . ecx) e
         lpos = length pos

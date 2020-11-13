@@ -1,29 +1,17 @@
 module Editor.InputSpec where
 
 import qualified Data.Sequence as Seq
-import Data.Time.Clock.System (SystemTime(MkSystemTime))
 import Test.Hspec
 
 import Editor.Input
 import Editor.Editor
 import Editor.Line
-import Editor.MessageBar
 
 
 testEditor :: Editor
-testEditor = Editor
-    { ecx = 0
-    , ecy = 0
-    , erx = 0
-    , eColOffset = 0
-    , eRowOffset = 0
-    , eScreenCols = 5
-    , eScreenRows = 5
-    , eLines = Seq.empty
-    , eFileName = ""
-    , eMessageBar = emptyMessageBar
-    , eTime = MkSystemTime 0 0
-    }
+testEditor = newEditor { eScreenCols = 5
+                       , eScreenRows = 5
+                       }
 
 spec :: Spec
 spec = do
@@ -183,16 +171,20 @@ spec_snapCursor = describe "snapCursor" $ do
 
 spec_insertChar :: Spec
 spec_insertChar = describe "insertChar" $ do
-    it "inserts a character into the EditorLine at the current x and y position and moves x to the right" $ do
+    it "inserts a character into the EditorLine at the current x and y position and moves x to the right, and sets editor status to dirty" $ do
         let e = testEditor { eLines = Seq.singleton $ newELine "Hello orld"
                            , ecx = 6
                            }
         insertChar e 'w' `shouldBe`
             updateCursor ArrowRight
-                e { eLines = Seq.singleton $ newELine "Hello world" }
+                e { eLines = Seq.singleton $ newELine "Hello world"
+                  , eDirty = True
+                  }
 
-    it "appends a new EditorLine and inserts the character if at the end of the file and moves x to the right" $ do
+    it "appends a new EditorLine and inserts the character if at the end of the file and moves x to the right, and sets editor status to dirty" $ do
         let e = testEditor
         insertChar e 'a' `shouldBe`
             updateCursor ArrowRight
-                e { eLines = (eLines e) Seq.|> (newELine "a") }
+                e { eLines = (eLines e) Seq.|> (newELine "a")
+                  , eDirty = True
+                  }

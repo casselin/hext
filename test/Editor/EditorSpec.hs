@@ -29,10 +29,11 @@ spec_eNumLines = describe "eNumLines" $ do
 
 spec_appendLine :: Spec
 spec_appendLine = describe "appendLine" $ do
-    it "appends the given string to the given editor's EditorLines" $ do
+    it "appends the given string to the given editor's EditorLines and sets the editor's status to dirty" $ do
         appendLine testEditor "Hello world" `shouldBe`
             testEditor { eLines = Seq.fromList $
                 [EditorLine 11 11 "Hello world" "Hello world"]
+                       , eDirty = True
                        }
 
     it "increases the length of the eLines field by one" $ do

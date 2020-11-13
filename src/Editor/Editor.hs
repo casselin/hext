@@ -12,17 +12,18 @@ type Rows = Int
 type Cols = Int
 
 data Editor = Editor
-    { ecx            :: Cols
-    , ecy            :: Rows
-    , erx            :: Cols
-    , eColOffset     :: Cols
-    , eRowOffset     :: Rows
-    , eScreenCols    :: Cols
-    , eScreenRows    :: Rows
-    , eLines         :: Seq EditorLine
-    , eFileName      :: String
-    , eMessageBar    :: MessageBar
-    , eTime          :: SystemTime
+    { ecx         :: Cols
+    , ecy         :: Rows
+    , erx         :: Cols
+    , eColOffset  :: Cols
+    , eRowOffset  :: Rows
+    , eScreenCols :: Cols
+    , eScreenRows :: Rows
+    , eLines      :: Seq EditorLine
+    , eFileName   :: String
+    , eMessageBar :: MessageBar
+    , eTime       :: SystemTime
+    , eDirty      :: Bool
     }
     deriving (Show, Eq)
 
@@ -39,6 +40,7 @@ newEditor = Editor
     , eFileName   = ""
     , eMessageBar = emptyMessageBar
     , eTime       = MkSystemTime 0 0
+    , eDirty      = False
     }
 
 eNumLines :: Editor -> Int
@@ -46,7 +48,9 @@ eNumLines = length . eLines
 
 appendLine :: Editor -> String -> Editor
 appendLine e s =
-    e { eLines = eLines e |> (updateRender $ newELine s) }
+    e { eLines = eLines e |> (updateRender $ newELine s)
+      , eDirty = True
+      }
 
 setMessageBar :: Editor -> String -> Editor
 setMessageBar e s =
