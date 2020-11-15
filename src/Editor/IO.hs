@@ -10,9 +10,18 @@ import Editor.Input
 
 
 handleIORequest :: (IORequest, Editor) -> IO Editor
-handleIORequest (None, e) = return e
-handleIORequest (Save, e) = saveFile e >>= return
-handleIORequest (Exit, e) = exitProgram >> return e
+handleIORequest (Skip, e) = return e
+handleIORequest (None, e) = return . unQuitConfirm $ e
+handleIORequest (Save, e) = (saveFile . unQuitConfirm $ e) >>= return
+handleIORequest (Exit, e) = handleExit e
+
+handleExit :: Editor -> IO Editor
+handleExit e
+    | eQuitConfirm e = exitProgram >> return e
+    | eDirty e = do
+        let e' = setMessageBar e "Unsaved changes: Press Ctrl-Q again to quit"
+        return $ e' { eQuitConfirm = True }
+    | otherwise = exitProgram >> return e
 
 initEditor :: [String] -> IO Editor
 initEditor as = initWindow newEditor >>=

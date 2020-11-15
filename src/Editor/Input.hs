@@ -11,12 +11,13 @@ import Editor.Editor
 import Editor.Line
 
 data IORequest
-    = None
+    = Skip
+    | None
     | Save
     | Exit
 
 data KeyPress
-    = Null
+    = NoInput
     | Enter
     | Esc
     | Backspace
@@ -147,14 +148,14 @@ parseKey (Left (EscSeq s)) =
         "OF" -> Escape EndKey
         _    -> Esc
 parseKey (Right c)
-    | c == '\NUL'             = Null
+    | c == '\NUL'             = NoInput
     | c == '\r'               = Enter
     | c == '\DEL'             = Backspace
     | c >= '\1' && c <= '\26' = Ctrl (unctrlkey c)
     | otherwise               = Letter c
 
 processKey :: Editor -> KeyPress -> (IORequest, Editor)
-processKey e (Null)      = (None, e)
+processKey e (NoInput)   = (Skip, e)
 processKey e (Enter)     = (None, e) -- TODO
 processKey e (Esc)       = (None, e)
 processKey e (Backspace) = (None, e) -- TODO
