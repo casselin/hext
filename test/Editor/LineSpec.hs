@@ -15,31 +15,53 @@ testLine = EditorLine
 
 spec :: Spec
 spec = do
-    spec_lineInsertCharAt
+    spec_insertCharAt
+    spec_deleteCharAt
     spec_nextTab
     spec_ecxToErx
     spec_removeTabs
     spec_updateRender
 
-spec_lineInsertCharAt :: Spec
-spec_lineInsertCharAt = describe "lineInsertCharAt" $ do
+spec_insertCharAt :: Spec
+spec_insertCharAt = describe "insertCharAt" $ do
     it "inserts character at given position of given EditorLine" $ do
-        lineInsertCharAt (newELine "hllo") 1 'e'
+        insertCharAt (newELine "hllo") 1 'e'
             `shouldBe` EditorLine 5 5 "hello" "hello"
-        lineInsertCharAt (newELine "ello") 0 'h'
+        insertCharAt (newELine "ello") 0 'h'
             `shouldBe` EditorLine 5 5 "hello" "hello"
-        lineInsertCharAt (newELine "hell") 4 'o'
+        insertCharAt (newELine "hell") 4 'o'
             `shouldBe` EditorLine 5 5 "hello" "hello"
-        lineInsertCharAt (newELine "hell") 3 'o'
+        insertCharAt (newELine "hell") 3 'o'
             `shouldBe` EditorLine 5 5 "helol" "helol"
 
     it "prepends if index is too small" $ do
-        lineInsertCharAt (newELine "ello") (-1) 'h'
+        insertCharAt (newELine "ello") (-1) 'h'
             `shouldBe` EditorLine 5 5 "hello" "hello"
 
     it "appends if index is too large" $ do
-        lineInsertCharAt (newELine "hell") 10 'o'
+        insertCharAt (newELine "hell") 10 'o'
             `shouldBe` EditorLine 5 5 "hello" "hello"
+
+    it "increases the length of the EditorLine" $ do
+        (lineSize . insertCharAt (newELine "124") 2) '3'
+            `shouldBe` 4
+
+spec_deleteCharAt :: Spec
+spec_deleteCharAt = describe "deleteCharAt" $ do
+    it "deletes the character at the given index" $ do
+        deleteCharAt (newELine "hello") 1 `shouldBe`
+            newELine "hllo"
+
+    it "deletes the first element if the index is negative" $ do
+        deleteCharAt (newELine "hello") (-1) `shouldBe`
+            newELine "ello"
+
+    it "returns the same EditorLine if the index is too large" $ do
+        deleteCharAt (newELine "hello") 5 `shouldBe`
+            newELine "hello"
+
+    it "reduces the length of the EditorLine by 1" $ do
+        (lineSize . deleteCharAt (newELine "1243")) 2 `shouldBe` 3
 
 spec_nextTab :: Spec
 spec_nextTab = describe "nextTab" $ do

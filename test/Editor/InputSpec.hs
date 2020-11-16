@@ -22,6 +22,7 @@ spec = do
     spec_moveCursor
     spec_snapCursor
     spec_insertChar
+    spec_deleteChar
 
 spec_unctrlkey :: Spec
 spec_unctrlkey = describe "unctrlkey" $ do
@@ -186,5 +187,17 @@ spec_insertChar = describe "insertChar" $ do
         insertChar e 'a' `shouldBe`
             updateCursor ArrowRight
                 e { eLines = (eLines e) Seq.|> (newELine "a")
+                  , eDirty = True
+                  }
+
+spec_deleteChar :: Spec
+spec_deleteChar = describe "deleteChar" $ do
+    it "deletes a character one position behind the current x position and moves x to the left, and sets the editor status to dirty" $ do
+        let e = testEditor { eLines = Seq.singleton $ newELine "Hello world"
+                           , ecx = 7
+                           }
+        deleteChar e `shouldBe`
+            updateCursor ArrowLeft
+                e { eLines = Seq.singleton $ newELine "Hello orld"
                   , eDirty = True
                   }

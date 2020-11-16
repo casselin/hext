@@ -10,10 +10,10 @@ import Editor.Input
 
 
 handleIORequest :: (IORequest, Editor) -> IO Editor
-handleIORequest (Skip, e) = return e
-handleIORequest (None, e) = return . unQuitConfirm $ e
-handleIORequest (Save, e) = (saveFile . unQuitConfirm $ e) >>= return
-handleIORequest (Exit, e) = handleExit e
+handleIORequest (Ignore, e) = return e
+handleIORequest (None, e)   = return . unQuitConfirm $ e
+handleIORequest (Save, e)   = (saveFile . unQuitConfirm $ e) >>= return
+handleIORequest (Exit, e)   = handleExit e
 
 handleExit :: Editor -> IO Editor
 handleExit e

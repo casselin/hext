@@ -11,7 +11,7 @@ import Editor.Editor
 import Editor.Line
 
 data IORequest
-    = Skip
+    = Ignore
     | None
     | Save
     | Exit
@@ -21,6 +21,7 @@ data KeyPress
     | Enter
     | Esc
     | Backspace
+    | DelKey
     | Letter Char
     | Ctrl Char
     | Escape Direction
@@ -31,7 +32,6 @@ data Direction
     | ArrowDown
     | ArrowLeft
     | ArrowRight
-    | DelKey
     | PageUp
     | PageDown
     | HomeKey
@@ -92,7 +92,6 @@ moveCursor e d = case d of
                               , ecx = 0
                               }
                        else e
-    DelKey     -> e
     PageUp     -> foldl moveCursor (e { ecy = rOff }) .
                       take r $ repeat ArrowUp
     PageDown   -> foldl moveCursor (e { ecy = min (rOff + r - 1) n }).
@@ -118,7 +117,7 @@ updateCursor d = scroll . snapCursor . flip moveCursor d
 
 insertChar :: Editor -> Char -> Editor
 insertChar e c = updateCursor ArrowRight
-    e' { eLines = Seq.update y (lineInsertCharAt el x c) (eLines e')
+    e' { eLines = Seq.update y (insertCharAt l x c) (eLines e')
        , eDirty = True
        }
     where
@@ -126,13 +125,27 @@ insertChar e c = updateCursor ArrowRight
         y = ecy e
         n = eNumLines e
         e' = if y == n then appendLine e "" else e
-        el = (eLines e') `Seq.index` y
+        l = (eLines e') `Seq.index` y
+
+deleteChar :: Editor -> Editor
+deleteChar e
+    | y == n = e
+    | x <= 0 = e
+    | otherwise = updateCursor ArrowLeft
+        e { eLines = Seq.update y (deleteCharAt l (x-1)) (eLines e)
+          , eDirty = True
+          }
+    where
+        x = ecx e
+        y = ecy e
+        n = eNumLines e
+        l = (eLines e) `Seq.index` y
 
 parseKey :: Either EscSeq Char -> KeyPress
 parseKey (Left (EscSeq s)) =
     case (drop 2 s) of
         "1~" -> Escape HomeKey
-        "3~" -> Escape DelKey
+        "3~" -> DelKey
         "4~" -> Escape EndKey
         "5~" -> Escape PageUp
         "6~" -> Escape PageDown
@@ -155,11 +168,13 @@ parseKey (Right c)
     | otherwise               = Letter c
 
 processKey :: Editor -> KeyPress -> (IORequest, Editor)
-processKey e (NoInput)   = (Skip, e)
+processKey e (NoInput)   = (Ignore, e)
 processKey e (Enter)     = (None, e) -- TODO
 processKey e (Esc)       = (None, e)
-processKey e (Backspace) = (None, e) -- TODO
-processKey e (Letter c)  = (None, insertChar e $ c)
+processKey e (Backspace) = (None, deleteChar e)
+processKey e (DelKey)    =
+    (None, deleteChar . updateCursor ArrowRight $ e) -- TODO
+processKey e (Letter c)  = (None, insertChar e c)
 processKey e (Escape d)  = (None, updateCursor d e)
 processKey e (Ctrl c)    = case c of
     'q' -> (Exit, e)
