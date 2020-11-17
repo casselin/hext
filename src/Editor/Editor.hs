@@ -1,7 +1,7 @@
 module Editor.Editor where
 
 import Data.Sequence (Seq, (|>))
-import qualified Data.Sequence as Seq (empty)
+import qualified Data.Sequence as Seq (empty, deleteAt)
 import Data.Time.Clock.System (SystemTime(MkSystemTime))
 
 import Editor.Line
@@ -60,3 +60,11 @@ appendLine e s =
 setMessageBar :: Editor -> String -> Editor
 setMessageBar e s =
     e { eMessageBar = newMessageBar s (eTime e) }
+
+deleteLineAt :: Editor -> Int -> Editor
+deleteLineAt e i = e { eLines = Seq.deleteAt i (eLines e)
+                     , eDirty = True
+                     }
+
+deleteLine :: Editor -> Editor
+deleteLine e = deleteLineAt e (ecy e)

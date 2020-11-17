@@ -18,19 +18,26 @@ newELine s = updateRender $ EditorLine
     }
 
 updateRender :: EditorLine -> EditorLine
-updateRender el = el { lineRenderSize = n
-                     , lineRender = s }
+updateRender l = l { lineRenderSize = n
+                   , lineRender = s
+                   }
     where
-        s = removeTabs . lineContents $ el
+        s = removeTabs . lineContents $ l
         n = length s
 
 insertCharAt :: EditorLine -> Int -> Char -> EditorLine
-insertCharAt el i c = updateRender . newELine $ xs ++ [c] ++ ys
-    where (xs, ys) = splitAt i . lineContents $ el
+insertCharAt l i c = updateRender . newELine $ xs ++ [c] ++ ys
+    where (xs, ys) = splitAt i . lineContents $ l
 
 deleteCharAt :: EditorLine -> Int -> EditorLine
-deleteCharAt el i = updateRender . newELine $ xs ++ (drop 1 ys)
-    where (xs, ys) = splitAt i . lineContents $ el
+deleteCharAt l i = updateRender . newELine $ xs ++ (drop 1 ys)
+    where (xs, ys) = splitAt i . lineContents $ l
+
+appendString :: EditorLine -> String -> EditorLine
+appendString l s = updateRender . newELine $ (lineContents l) ++ s
+
+lineAppend :: EditorLine -> EditorLine -> EditorLine
+lineAppend l1 l2 = appendString l1 (lineContents l2)
 
 tabStop :: Int
 tabStop = 8

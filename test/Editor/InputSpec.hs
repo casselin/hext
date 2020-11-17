@@ -192,6 +192,11 @@ spec_insertChar = describe "insertChar" $ do
 
 spec_deleteChar :: Spec
 spec_deleteChar = describe "deleteChar" $ do
+    it "does nothing if at the top right corner of the editor" $ do
+        let e = testEditor { eLines = Seq.singleton $ newELine "Hello world"
+                           }
+        deleteChar e `shouldBe` e
+
     it "deletes a character one position behind the current x position and moves x to the left, and sets the editor status to dirty" $ do
         let e = testEditor { eLines = Seq.singleton $ newELine "Hello world"
                            , ecx = 7
@@ -199,5 +204,16 @@ spec_deleteChar = describe "deleteChar" $ do
         deleteChar e `shouldBe`
             updateCursor ArrowLeft
                 e { eLines = Seq.singleton $ newELine "Hello orld"
+                  , eDirty = True
+                  }
+
+    it "appends the current line to the previous if x is 0 and deletes the current line" $ do
+        let e = testEditor { eLines = Seq.fromList $
+                           [newELine "Hello ", newELine "world"]
+                           , ecy = 1
+                           }
+        deleteChar e `shouldBe`
+            (updateCursor ArrowLeft e)
+                  { eLines = Seq.singleton $ newELine "Hello world"
                   , eDirty = True
                   }

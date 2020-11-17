@@ -3,6 +3,7 @@ module Editor.Input where
 import qualified Data.Sequence as Seq
     ( index
     , update
+    , deleteAt
     )
 import Data.Char (ord, chr)
 
@@ -129,17 +130,25 @@ insertChar e c = updateCursor ArrowRight
 
 deleteChar :: Editor -> Editor
 deleteChar e
-    | y == n = e
-    | x <= 0 = e
+    | y == n           = e
+    | x == 0 && y == 0 = e
+    | x == 0 =
+        (updateCursor ArrowLeft e) { eLines = Seq.deleteAt y
+                                   . Seq.update (y-1) (lineAppend lprev l)
+                                   $ ls
+                                   , eDirty = True
+                                   }
     | otherwise = updateCursor ArrowLeft
-        e { eLines = Seq.update y (deleteCharAt l (x-1)) (eLines e)
+        e { eLines = Seq.update y (deleteCharAt l (x-1)) ls
           , eDirty = True
           }
     where
         x = ecx e
         y = ecy e
         n = eNumLines e
+        ls = eLines e
         l = (eLines e) `Seq.index` y
+        lprev = (eLines e) `Seq.index` (y-1)
 
 parseKey :: Either EscSeq Char -> KeyPress
 parseKey (Left (EscSeq s)) =

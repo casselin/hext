@@ -17,6 +17,8 @@ spec :: Spec
 spec = do
     spec_insertCharAt
     spec_deleteCharAt
+    spec_appendString
+    spec_lineAppend
     spec_nextTab
     spec_ecxToErx
     spec_removeTabs
@@ -62,6 +64,19 @@ spec_deleteCharAt = describe "deleteCharAt" $ do
 
     it "reduces the length of the EditorLine by 1" $ do
         (lineSize . deleteCharAt (newELine "1243")) 2 `shouldBe` 3
+
+spec_appendString :: Spec
+spec_appendString = describe "appendString" $ do
+    it "appends the given string to the given EditorLine" $ do
+        appendString (newELine "Hello ") "world" `shouldBe`
+            newELine "Hello world"
+
+spec_lineAppend :: Spec
+spec_lineAppend = describe "lineAppend" $ do
+    it "appends the second EditorLine's contents to the contents of the first" $ do
+        let l1 = newELine "Hello "
+            l2 = newELine "world"
+        lineAppend l1 l2 `shouldBe` newELine "Hello world"
 
 spec_nextTab :: Spec
 spec_nextTab = describe "nextTab" $ do
