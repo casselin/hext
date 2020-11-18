@@ -3,6 +3,7 @@ module Editor.Input where
 import qualified Data.Sequence as Seq
     ( index
     , update
+    , insertAt
     , deleteAt
     )
 import Data.Char (ord, chr)
@@ -128,6 +129,20 @@ insertChar e c = updateCursor ArrowRight
         e' = if y == n then appendLine e "" else e
         l = (eLines e') `Seq.index` y
 
+insertNewline :: Editor -> Editor
+insertNewline e = updateCursor HomeKey
+                . flip moveCursor ArrowDown
+                $ e { eLines = Seq.update y (newELine as)
+                             . Seq.insertAt (y+1) (newELine bs)
+                             $ eLines e
+                    , eDirty = True
+                    }
+    where
+        x = ecx e
+        y = ecy e
+        l = eLines e `Seq.index` y
+        (as, bs) = splitAt x . lineContents $ l
+
 deleteChar :: Editor -> Editor
 deleteChar e
     | y == n           = e
@@ -178,11 +193,11 @@ parseKey (Right c)
 
 processKey :: Editor -> KeyPress -> (IORequest, Editor)
 processKey e (NoInput)   = (Ignore, e)
-processKey e (Enter)     = (None, e) -- TODO
+processKey e (Enter)     = (None, insertNewline e)
 processKey e (Esc)       = (None, e)
 processKey e (Backspace) = (None, deleteChar e)
 processKey e (DelKey)    =
-    (None, deleteChar . updateCursor ArrowRight $ e) -- TODO
+    (None, deleteChar . updateCursor ArrowRight $ e)
 processKey e (Letter c)  = (None, insertChar e c)
 processKey e (Escape d)  = (None, updateCursor d e)
 processKey e (Ctrl c)    = case c of

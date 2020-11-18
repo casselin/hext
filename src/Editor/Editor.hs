@@ -1,7 +1,7 @@
 module Editor.Editor where
 
 import Data.Sequence (Seq, (|>))
-import qualified Data.Sequence as Seq (empty)
+import qualified Data.Sequence as Seq (empty, insertAt)
 import Data.Time.Clock.System (SystemTime(MkSystemTime))
 
 import Editor.Line
@@ -53,7 +53,13 @@ unQuitConfirm e = e { eQuitConfirm = False }
 
 appendLine :: Editor -> String -> Editor
 appendLine e s =
-    e { eLines = eLines e |> (updateRender $ newELine s)
+    e { eLines = eLines e |> (newELine s)
+      , eDirty = True
+      }
+
+insertLineAt :: Editor -> Int -> String -> Editor
+insertLineAt e i s =
+    e { eLines = Seq.insertAt i (newELine s) (eLines e)
       , eDirty = True
       }
 

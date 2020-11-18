@@ -22,6 +22,7 @@ spec = do
     spec_moveCursor
     spec_snapCursor
     spec_insertChar
+    spec_insertNewline
     spec_deleteChar
 
 spec_unctrlkey :: Spec
@@ -190,6 +191,29 @@ spec_insertChar = describe "insertChar" $ do
                   , eDirty = True
                   }
 
+spec_insertNewline :: Spec
+spec_insertNewline = describe "insertNewline" $ do
+    it "inserts a blank line at the current y position if x is 0" $ do
+        let e = testEditor { eLines = Seq.singleton $ newELine "Hello"
+                           }
+        insertNewline e `shouldBe`
+            (updateCursor HomeKey . flip moveCursor ArrowDown)
+                e { eLines = Seq.fromList
+                        [newELine "", newELine "Hello"]
+                  , eDirty = True
+                  }
+
+    it "splits the current line at the x position and inserts the contents on the right in a line below it" $ do
+        let e = testEditor { eLines = Seq.singleton $ newELine "Hello world"
+                           , ecx = 6
+                           }
+        insertNewline e `shouldBe`
+            (updateCursor HomeKey . flip moveCursor ArrowDown)
+                e { eLines = Seq.fromList
+                        [newELine "Hello ", newELine "world"]
+                  , eDirty = True
+                  }
+
 spec_deleteChar :: Spec
 spec_deleteChar = describe "deleteChar" $ do
     it "does nothing if at the top right corner of the editor" $ do
@@ -209,7 +233,7 @@ spec_deleteChar = describe "deleteChar" $ do
 
     it "appends the current line to the previous if x is 0 and deletes the current line" $ do
         let e = testEditor { eLines = Seq.fromList $
-                           [newELine "Hello ", newELine "world"]
+                                [newELine "Hello ", newELine "world"]
                            , ecy = 1
                            }
         deleteChar e `shouldBe`

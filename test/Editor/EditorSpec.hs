@@ -15,8 +15,9 @@ testEditor = newEditor
 
 spec :: Spec
 spec = do
-    spec_appendLine
     spec_eNumLines
+    spec_appendLine
+    spec_insertLineAt
     spec_setMessageBar
 
 spec_eNumLines :: Spec
@@ -39,6 +40,21 @@ spec_appendLine = describe "appendLine" $ do
     it "increases the length of the eLines field by one" $ do
         (length . eLines . appendLine testEditor) "Hello world" `shouldBe`
             ((+ 1) . length . eLines) testEditor
+
+spec_insertLineAt :: Spec
+spec_insertLineAt = describe "insertLineAt" $ do
+    it "inserts the given EditorLine at the given index and sets Editor's status to dirty" $ do
+        let e = testEditor { eLines = Seq.fromList $
+            [newELine "Line 0", newELine "Line 1", newELine "Line 3"]
+                           }
+        insertLineAt e 2 "Line 2" `shouldBe`
+            e { eLines = Seq.fromList $ [ newELine "Line 0"
+                                        , newELine "Line 1"
+                                        , newELine "Line 2"
+                                        , newELine "Line 3"
+                                        ]
+              , eDirty = True
+              }
 
 spec_setMessageBar :: Spec
 spec_setMessageBar = describe "setMessageBar" $ do
