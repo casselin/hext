@@ -7,6 +7,7 @@ import Terminal.IO
 import Editor.Editor
 import Editor.File
 import Editor.Input
+import Editor.Output
 
 
 handleIORequest :: (IORequest, Editor) -> IO Editor
@@ -51,7 +52,11 @@ initFile s e = do
 
 saveFile :: Editor -> IO Editor
 saveFile e = case file of
-    "" -> return e
+    "" -> do
+        (filename, e') <- promptInput "Save as: " e ""
+        case filename of
+            Nothing -> return . setMessageBar e' $ "Save aborted"
+            Just fp -> saveFile $ e' { eFileName = fp }
     _  -> do
         result <- try (writeFile file s) :: IO (Either IOException ())
         case result of
@@ -63,3 +68,20 @@ saveFile e = case file of
     where
         file = eFileName e
         s = linesToString e
+
+promptInput :: String -> Editor -> String -> IO (Maybe String, Editor)
+promptInput p e s = do
+    t <- getSystemTime
+    writeString . refreshScreen $ setMessageBar e
+        (p ++ s ++ " (ESC to cancel)")
+    input <- parseKey <$> readKey
+    case input of
+        Enter -> if null s
+                     then promptInput p e s
+                     else return (Just s, e { eTime = t })
+        Esc -> return (Nothing, e { eTime = t })
+        Backspace -> if null s
+                         then promptInput p e s
+                         else promptInput p e (init s)
+        Letter c -> promptInput p e (s ++ [c])
+        _ -> promptInput p e s
