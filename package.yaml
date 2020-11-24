@@ -51,8 +51,6 @@ executables:
     - -Wincomplete-record-updates
     - -Wredundant-constraints
     - -Wpartial-fields
-    #- -Wmissing-export-lists
-    #- -Wmissing-deriving-strategies
     dependencies:
     - hext
 
@@ -71,8 +69,6 @@ tests:
     - -Wincomplete-record-updates
     - -Wredundant-constraints
     - -Wpartial-fields
-    #- -Wmissing-export-lists
-    #- -Wmissing-deriving-strategies
     dependencies:
     - hext
     - hspec

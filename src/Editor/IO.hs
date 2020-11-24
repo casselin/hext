@@ -1,6 +1,7 @@
 module Editor.IO where
 
 import Data.Time.Clock.System (getSystemTime)
+import System.IO.Error (ioeGetErrorString)
 import Control.Exception (try, IOException)
 
 import Terminal.IO
@@ -60,8 +61,10 @@ saveFile e = case file of
     _  -> do
         result <- try (writeFile file s) :: IO (Either IOException ())
         case result of
-            (Left err) ->
-                return . setMessageBar e $ "Save failed: " ++ show err
+            (Left err) -> do
+                let e' = setMessageBar e $ "Save failed: " ++
+                                           ioeGetErrorString err
+                return e' { eFileName = "" }
             (Right _) -> do
                 let e' = setMessageBar e $ "Saved " ++ file
                 return $ e' { eDirty = False }
